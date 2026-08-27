@@ -63,9 +63,10 @@
                 </ol>
               </div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 h-full">
-              <h3 class="text-lg font-semibold text-slate-800 border-b pb-2 mb-4">Top Community Notes</h3>
-              <div class="space-y-4" id="communityNotes"></div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 h-full flex flex-col">
+              <h3 class="text-lg font-semibold text-slate-800 border-b pb-2 mb-4">Community Notes</h3>
+              <div class="space-y-4 overflow-y-auto max-h-96" id="communityNotesResults">
+                </div>
             </div>
           </div>
         </div>
@@ -130,52 +131,33 @@
       <div id="view-community" class="hidden max-w-5xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="md:col-span-2 space-y-6">
+            
             <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
               <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Recent Workarounds</h2>
-              <div class="space-y-4">
-                <div class="p-4 bg-slate-50 rounded border border-slate-200">
-                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2">MBC-7305</span>
-                  <p class="text-sm text-slate-700 mb-2">"Found that if you back out to the customer dashboard and re-scan the IMEI rather than manually typing it, it bypasses the system lock."</p>
-                  <p class="text-xs text-slate-500 font-semibold">- Shared by NER • 2 hours ago</p>
-                </div>
-                <div class="p-4 bg-slate-50 rounded border border-slate-200">
-                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2">EC5100</span>
-                  <p class="text-sm text-slate-700 mb-2">"If customer just converted from NOW Internet to Postpaid, wait 15 minutes before attempting to add Mobile, otherwise it fails out."</p>
-                  <p class="text-xs text-slate-500 font-semibold">- Shared by FRE • 5 hours ago</p>
-                </div>
+              <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2" id="communityFeed">
+                <p class="text-slate-500 text-sm italic">Loading community updates...</p>
               </div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-              <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Recent Wins 🏆</h2>
-              <div class="space-y-3">
-                <div class="flex items-center text-sm text-slate-700">
-                  <span class="text-2xl mr-3">🚀</span>
-                  <p><strong>Store 4291</strong> successfully cleared a 3-day pending activation using the EC4400 community workaround!</p>
-                </div>
-                <div class="flex items-center text-sm text-slate-700">
-                  <span class="text-2xl mr-3">💡</span>
-                  <p><strong>West Div Ops</strong> officially verified the BYO-1900 bypass submitted yesterday. It has been added to official workarounds.</p>
-                </div>
-              </div>
-            </div>
+
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 h-fit">
-            <h2 class="text-xl font-bold text-slate-800 mb-2">Contribute a Workaround</h2>
-            <p class="text-slate-500 text-sm mb-6">Found a reliable bypass? Share it with the team.</p>
+          
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 h-fit sticky top-6">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">Contribute a Fix</h2>
+            <p class="text-slate-500 text-sm mb-6">Found a reliable bypass? Share it with the network.</p>
             <form onsubmit="submitFix(event)" class="space-y-4">
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Error Code</label>
-                <input type="text" placeholder="e.g., MBC-7305" class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" required>
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">What did you experience?</label>
-                <textarea rows="2" class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                <input type="text" id="fixCode" placeholder="e.g., MBC-7305" class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" required>
               </div>
               <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Your Solution</label>
-                <textarea rows="3" class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                <textarea rows="4" id="fixSolution" placeholder="Step-by-step how you bypassed the issue..." class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
               </div>
-              <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition shadow">Submit for Review</button>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Your Name / Store (Optional)</label>
+                <input type="text" id="fixAuthor" placeholder="e.g., John D. or Store 8472" class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <button type="submit" class="w-full bg-green-600 text-white px-4 py-3 rounded font-bold hover:bg-green-700 transition shadow">Submit Workaround</button>
             </form>
           </div>
         </div>
@@ -183,11 +165,158 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
+
   <script>
+    // --- 1. FIREBASE CONFIGURATION ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-0fiYyx-AbaU5B5Ep378ZULmBDP5CvrI",
+      authDomain: "xm360-hub.firebaseapp.com",
+      projectId: "xm360-hub",
+      storageBucket: "xm360-hub.firebasestorage.app",
+      messagingSenderId: "578131266407",
+      appId: "1:578131266407:web:fde344903938c5176dbdc2",
+      measurementId: "G-02K95FH3ED"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // --- 2. APP INITIALIZATION ---
     function initApp() {
       renderDictionary();
+      listenForCommunityNotes();
     }
 
+    // --- 3. FIREBASE: LISTEN FOR FEED UPDATES ---
+    function listenForCommunityNotes() {
+      db.collection("workarounds").orderBy("timestamp", "desc").onSnapshot((querySnapshot) => {
+        const feed = document.getElementById('communityFeed');
+        let notesHTML = '';
+        
+        if(querySnapshot.empty) {
+          feed.innerHTML = '<p class="text-slate-500 text-sm italic">No workarounds submitted yet.</p>';
+          return;
+        }
+
+        querySnapshot.forEach((doc) => {
+          const note = doc.data();
+          // Format timestamp nicely if it exists
+          let timeString = "Recently";
+          if (note.timestamp) {
+            const date = note.timestamp.toDate();
+            timeString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          }
+
+          notesHTML += `
+            <div class="p-4 bg-slate-50 rounded border border-slate-200">
+              <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2">${note.code}</span>
+              <p class="text-sm text-slate-700 mb-2">"${note.solution}"</p>
+              <p class="text-xs text-slate-500 font-semibold">- Shared by ${note.author} • ${timeString}</p>
+            </div>
+          `;
+        });
+        
+        feed.innerHTML = notesHTML;
+      }, (error) => {
+        console.error("Error fetching notes: ", error);
+        document.getElementById('communityFeed').innerHTML = '<p class="text-red-500 text-sm italic">Error connecting to database. Check Firebase rules.</p>';
+      });
+    }
+
+    // --- 4. FIREBASE: SUBMIT NEW FIX ---
+    async function submitFix(e) {
+      e.preventDefault();
+      
+      const code = document.getElementById('fixCode').value.trim().toUpperCase();
+      const solution = document.getElementById('fixSolution').value.trim();
+      let author = document.getElementById('fixAuthor').value.trim();
+      if(!author) author = "Anonymous Agent";
+
+      if(!errorDatabase[code]) {
+        alert("Please ensure the error code matches an official XM360 code.");
+        return;
+      }
+
+      try {
+        await db.collection("workarounds").add({
+          code: code,
+          solution: solution,
+          author: author,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        e.target.reset();
+        alert(`Success! Your workaround for ${code} is now live.`);
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert("Failed to save. Ensure your Firebase config is correct and Firestore rules allow writes.");
+      }
+    }
+
+    // --- 5. SEARCH & UI LOGIC ---
+    function searchError() {
+      const input = document.getElementById('searchInput').value.trim().toUpperCase();
+      const resultsArea = document.getElementById('resultsArea');
+      const notFoundMessage = document.getElementById('notFoundMessage');
+      const notesContainer = document.getElementById('communityNotesResults');
+      
+      if (input === '') return;
+
+      if (errorDatabase[input]) {
+        document.getElementById('errorCodeTitle').innerText = input;
+        document.getElementById('errorDescription').innerText = errorDatabase[input].description;
+        document.getElementById('officialAction').innerText = errorDatabase[input].action;
+        document.getElementById('pathingErrorCode').innerText = input;
+        
+        notesContainer.innerHTML = '<p class="text-slate-500 text-sm italic">Loading notes...</p>';
+        resultsArea.classList.remove('hidden');
+        notFoundMessage.classList.add('hidden');
+
+        // Fetch specific notes for this error code from Firebase
+        db.collection("workarounds").where("code", "==", input).orderBy("timestamp", "desc").get()
+          .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+              notesContainer.innerHTML = `<p class="text-slate-500 text-sm italic">No community workarounds submitted for ${input} yet.</p>`;
+              return;
+            }
+
+            let notesHTML = '';
+            querySnapshot.forEach((doc) => {
+              const note = doc.data();
+              let timeString = "Recently";
+              if (note.timestamp) {
+                const date = note.timestamp.toDate();
+                timeString = date.toLocaleDateString();
+              }
+
+              notesHTML += `
+                <div class="bg-amber-50 p-4 rounded text-sm border border-amber-200 mb-3">
+                  <p class="font-semibold text-amber-900">${note.author} <span class="text-amber-600 font-normal ml-2">${timeString}</span></p>
+                  <p class="text-slate-800 mt-1">${note.solution}</p>
+                </div>
+              `;
+            });
+            notesContainer.innerHTML = notesHTML;
+          })
+          .catch((error) => {
+            console.error("Error fetching specific notes: ", error);
+            if(error.code === 'failed-precondition') {
+               notesContainer.innerHTML = '<p class="text-red-500 text-xs mt-2">Firebase requires a composite index for this search. Check your browser console for the link to generate it.</p>';
+            } else {
+               notesContainer.innerHTML = '<p class="text-red-500 text-sm italic">Error loading notes.</p>';
+            }
+          });
+
+      } else {
+        resultsArea.classList.add('hidden');
+        notFoundMessage.classList.remove('hidden');
+      }
+    }
+
+    // --- OTHER CORE FUNCTIONS ---
     function checkPassword() {
       const input = document.getElementById('passwordInput').value;
       if (input === 'retailisawesome') {
@@ -208,6 +337,42 @@
       }
     });
 
+    document.getElementById("searchInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchError();
+      }
+    });
+
+    function switchTab(tab) {
+      const allTabs = ['search', 'dictionary', 'links', 'community'];
+      allTabs.forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tab) {
+          view.classList.remove('hidden');
+          btn.className = "px-6 py-2 bg-blue-600 text-white font-semibold rounded-full transition shadow";
+        } else {
+          view.classList.add('hidden');
+          btn.className = "px-6 py-2 bg-white text-slate-600 border border-slate-300 font-semibold rounded-full hover:bg-slate-100 transition shadow-sm";
+        }
+      });
+    }
+
+    function renderDictionary() {
+      const tbody = document.getElementById('dictionaryBody');
+      let html = '';
+      for (const [code, data] of Object.entries(errorDatabase)) {
+        html += `<tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                  <td class="p-4 font-bold text-slate-800">${code}</td>
+                  <td class="p-4">${data.description}</td>
+                  <td class="p-4 text-slate-600">${data.action}</td>
+                 </tr>`;
+      }
+      tbody.innerHTML = html;
+    }
+
+    // The Error Database array
     const errorDatabase = {
       "BYO-700": { description: "Device is tied to a pre-activated line.", action: "Check for the pending order in the Account History page of XM360. If you can’t resolve the pending order, escalate using the steps listed above." },
       "BYO-1000": { description: "Device is not eligible.", action: "Research where the device came from to confirm whether it is an eligible Xfinity device. If it is, follow the standard escalation steps." },
@@ -282,85 +447,6 @@
       "CYB-201": { description: "The issuing bank has questions about the request.", action: "You won’t get an authorization code automatically, but you might get one if you call the processor." },
       "CYB-202": { description: "The card is expired.", action: "Use a different form of payment." }
     };
-
-    function switchTab(tab) {
-      const allTabs = ['search', 'dictionary', 'links', 'community'];
-      
-      allTabs.forEach(t => {
-        const view = document.getElementById(`view-${t}`);
-        const btn = document.getElementById(`tab-${t}`);
-        
-        if (t === tab) {
-          view.classList.remove('hidden');
-          btn.className = "px-6 py-2 bg-blue-600 text-white font-semibold rounded-full transition shadow";
-        } else {
-          view.classList.add('hidden');
-          btn.className = "px-6 py-2 bg-white text-slate-600 border border-slate-300 font-semibold rounded-full hover:bg-slate-100 transition shadow-sm";
-        }
-      });
-    }
-
-    document.getElementById("searchInput").addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        searchError();
-      }
-    });
-
-    function searchError() {
-      const input = document.getElementById('searchInput').value.trim().toUpperCase();
-      const resultsArea = document.getElementById('resultsArea');
-      const notFoundMessage = document.getElementById('notFoundMessage');
-      
-      if (input === '') return;
-
-      if (errorDatabase[input]) {
-        document.getElementById('errorCodeTitle').innerText = input;
-        document.getElementById('errorDescription').innerText = errorDatabase[input].description;
-        document.getElementById('officialAction').innerText = errorDatabase[input].action;
-        document.getElementById('pathingErrorCode').innerText = input;
-        
-        const mockNotes = [
-          `Make sure to check the billing tab first for ${input}. Fixed it for me.`,
-          `I had to clear my browser cache to get past ${input} today.`,
-          `Escalated this one to Tier 2 yesterday and they said it's a known glitch.`
-        ];
-        const randomNote = mockNotes[input.length % mockNotes.length];
-        
-        document.getElementById('communityNotes').innerHTML = `
-          <div class="bg-amber-50 p-4 rounded text-sm border border-amber-200">
-            <p class="font-semibold text-amber-900">Store Manager <span class="text-amber-600 font-normal ml-2">Recently</span></p>
-            <p class="text-slate-800 mt-1">${randomNote}</p>
-            <div class="mt-3 border-t border-amber-200 pt-2"><button class="text-xs font-semibold text-slate-600 hover:text-green-600">👍 Helpful</button></div>
-          </div>
-        `;
-        
-        resultsArea.classList.remove('hidden');
-        notFoundMessage.classList.add('hidden');
-      } else {
-        resultsArea.classList.add('hidden');
-        notFoundMessage.classList.remove('hidden');
-      }
-    }
-
-    function renderDictionary() {
-      const tbody = document.getElementById('dictionaryBody');
-      let html = '';
-      for (const [code, data] of Object.entries(errorDatabase)) {
-        html += `<tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                  <td class="p-4 font-bold text-slate-800">${code}</td>
-                  <td class="p-4">${data.description}</td>
-                  <td class="p-4 text-slate-600">${data.action}</td>
-                 </tr>`;
-      }
-      tbody.innerHTML = html;
-    }
-
-    function submitFix(e) {
-      e.preventDefault();
-      alert("Success! Your workaround has been submitted to the moderation queue.");
-      e.target.reset();
-    }
   </script>
 </body>
 </html>
