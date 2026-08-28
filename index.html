@@ -277,7 +277,12 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    const ADMIN_EMAILS = ['baileyrobertwest@gmail.com', 'njttaylor@gmail.com', 'Tyler_Simpson@comcast.com',];
+    const ADMIN_EMAILS = [
+      'baileyrobertwest@gmail.com', 
+      'njttaylor@gmail.com',
+      'meghan_ball@cable.comcast.com',
+      'tyler_simpson@comcast.com'
+    ];
     let currentUser = null;
     let isAdmin = false;
     let currentDetailsUnsubscribe = null; 
@@ -506,7 +511,6 @@
       }
     }
 
-
     // --- WORKAROUND CARDS & SOCIAL FEATURES ---
     
     function buildWorkaroundCard(docId, note, prefix = 'global') {
@@ -634,13 +638,26 @@
 
       if(currentDetailsUnsubscribe) currentDetailsUnsubscribe();
       
-      currentDetailsUnsubscribe = db.collection("workarounds").where("code", "==", code).orderBy("timestamp", "desc").onSnapshot(snap => {
-        if(snap.empty) { container.innerHTML = `<p class="text-slate-500 text-sm italic">No community workarounds submitted for ${code} yet.</p>`; return; }
+      currentDetailsUnsubscribe = db.collection("workarounds").where("code", "==", code).onSnapshot(snap => {
+        if(snap.empty) { 
+          container.innerHTML = `<p class="text-slate-500 text-sm italic">No community workarounds submitted for ${code} yet.</p>`; 
+          return; 
+        }
         
         let docs = snap.docs.map(d => ({id: d.id, data: d.data()}));
-        docs.sort((a, b) => (b.data.upvotes || 0) - (a.data.upvotes || 0)); 
         
-        container.innerHTML = docs.map(doc => buildWorkaroundCard(doc.id, doc.data(), 'detail')).join('');
+        docs.sort((a, b) => {
+          let upvoteDiff = (b.data.upvotes || 0) - (a.data.upvotes || 0);
+          if (upvoteDiff !== 0) return upvoteDiff;
+          let timeA = a.data.timestamp ? a.data.timestamp.toMillis() : 0;
+          let timeB = b.data.timestamp ? b.data.timestamp.toMillis() : 0;
+          return timeB - timeA;
+        });
+        
+        container.innerHTML = docs.map(doc => buildWorkaroundCard(doc.id, doc.data, 'detail')).join('');
+      }, error => {
+        console.error("Error loading notes:", error);
+        container.innerHTML = '<p class="text-red-500 text-sm italic">Failed to load notes. Please check console.</p>';
       });
     }
 
