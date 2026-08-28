@@ -86,13 +86,15 @@
               <svg class="w-5 h-5 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
               Admin Control Panel
             </h3>
-            <p class="text-sm text-slate-300">You have active read/write privileges.</p>
+            <p class="text-sm text-slate-300">You have active read/write privileges for the Dictionary and Workarounds.</p>
           </div>
-          <button onclick="openAdminModal()" class="bg-green-600 px-4 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm text-sm">+ Add New Code</button>
+          <div class="flex space-x-3">
+            <button onclick="openAdminModal()" class="bg-green-600 px-4 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm text-sm">+ Add New Code</button>
+          </div>
         </div>
 
         <div class="flex justify-between items-center mb-6 relative group">
-          <input type="text" id="filterInput" onkeyup="filterDictionary()" placeholder="Search error codes or keywords... (Press / to focus)" class="w-full p-4 pl-10 border border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase shadow-sm transition">
+          <input type="text" id="filterInput" onkeyup="filterDictionary()" placeholder="Search error codes or keywords..." class="w-full p-4 pl-10 border border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase shadow-sm transition">
           <svg class="w-5 h-5 absolute left-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
 
@@ -123,9 +125,9 @@
           <p class="text-slate-600 dark:text-slate-400 mt-1 font-medium text-lg" id="detailDesc"></p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Escalation Path -->
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-full flex flex-col relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <!-- Escalation Path (h-fit applied) -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-fit flex flex-col relative">
             <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2 mb-4">
               <h3 class="text-xl font-bold text-slate-800 dark:text-white text-red-600 dark:text-red-400">Escalation Path</h3>
               <button onclick="copyEscalationPath()" class="text-sm flex items-center text-slate-500 hover:text-blue-600 transition bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded">
@@ -137,7 +139,7 @@
           </div>
           
           <!-- Community Notes -->
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-full flex flex-col">
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
             <h3 class="text-xl font-bold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 text-blue-600 dark:text-blue-400">Community Workarounds</h3>
             <div class="space-y-4 overflow-y-auto max-h-[500px] pr-2" id="detailCommunityNotes">
               <!-- Rendered via JS -->
@@ -148,19 +150,23 @@
 
       <!-- TAB: HELPFUL LINKS -->
       <div id="view-links" class="hidden max-w-4xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Company Mobile Home</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Public-facing mobile storefront.</p>
-          </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">BYOD IMEI Lookup</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Direct link to system to verify Bring Your Own Device eligibility.</p>
-          </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Enterprise Ticketing Support</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ticketing hub for submitting Tier 2 support escalations.</p>
-          </a>
+        <div id="adminLinkControls" class="hidden mb-6 bg-slate-800 text-white p-5 rounded-lg shadow-md flex-col md:flex-row justify-between items-center border border-slate-700">
+          <div class="mb-4 md:mb-0 text-center md:text-left">
+            <h3 class="font-bold text-lg flex items-center justify-center md:justify-start">
+              <svg class="w-5 h-5 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+              Links Admin Panel
+            </h3>
+            <p class="text-sm text-slate-300">Manage global helpful links.</p>
+          </div>
+          <div class="flex space-x-3">
+            <button onclick="restoreDefaultLinks()" class="bg-amber-600 px-4 py-2 rounded font-bold hover:bg-amber-700 transition shadow-sm text-sm">Restore Defaults</button>
+            <button onclick="openLinkAdminModal()" class="bg-green-600 px-4 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm text-sm">+ Add New Link</button>
+          </div>
+        </div>
+
+        <div id="linksGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated by Firebase -->
+          <p class="text-slate-500 italic text-sm">Loading links...</p>
         </div>
       </div>
 
@@ -201,7 +207,7 @@
     </div>
   </div>
 
-  <!-- ADMIN MODAL -->
+  <!-- ADMIN MODAL (Errors) -->
   <div id="adminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[110] flex items-center justify-center">
     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl w-full max-w-lg">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4" id="adminModalTitle">Add/Edit Code</h2>
@@ -221,6 +227,32 @@
         <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200 dark:border-slate-700">
           <button type="button" onclick="closeAdminModal()" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded font-semibold">Cancel</button>
           <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700">Save Database Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN MODAL (Links) -->
+  <div id="linkAdminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[110] flex items-center justify-center">
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl w-full max-w-lg">
+      <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4" id="linkAdminModalTitle">Add/Edit Link</h2>
+      <form onsubmit="saveAdminLink(event)" class="space-y-4">
+        <input type="hidden" id="adminLinkId">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Title</label>
+          <input type="text" id="adminLinkTitle" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">URL (Must start with https://)</label>
+          <input type="url" id="adminLinkUrl" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Description</label>
+          <input type="text" id="adminLinkDesc" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+          <button type="button" onclick="closeLinkAdminModal()" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700">Save Link</button>
         </div>
       </form>
     </div>
@@ -249,7 +281,7 @@
     const ADMIN_EMAILS = ['baileyrobertwest@gmail.com'];
     let currentUser = null;
     let isAdmin = false;
-    let currentDetailsUnsubscribe = null; // Used to kill active listeners when switching views
+    let currentDetailsUnsubscribe = null; 
 
     // Generate unique guest ID to track upvotes without logging in
     let localUserId = localStorage.getItem('localUserId');
@@ -275,11 +307,14 @@
           if (isAdmin) {
             document.getElementById('adminControls').classList.remove('hidden');
             document.getElementById('adminControls').classList.add('flex');
+            document.getElementById('adminLinkControls').classList.remove('hidden');
+            document.getElementById('adminLinkControls').classList.add('flex');
           }
           document.getElementById('guestNameField').classList.add('hidden');
           document.getElementById('fixAuthor').required = false;
 
           loadDictionaryFromCloud();
+          loadLinksFromCloud();
           listenForGlobalFeed();
         } else {
           if (!currentUser || !currentUser.isGuest) {
@@ -303,6 +338,7 @@
       document.getElementById('guestNameField').classList.remove('hidden');
       document.getElementById('fixAuthor').required = true;
       loadDictionaryFromCloud();
+      loadLinksFromCloud();
       listenForGlobalFeed();
     }
 
@@ -331,14 +367,6 @@
       navigator.clipboard.writeText(text).then(() => showToast("Escalation Path copied to clipboard!"));
     }
 
-    // Keyboard Shortcuts (Press '/' to search)
-    document.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        document.getElementById('filterInput').focus();
-      }
-    });
-
     function cleanProfanity(text) {
       const badWords = ['fuck', 'fucking', 'shit', 'bitch', 'asshole', 'crap', 'damn', 'cunt', 'dick', 'piss', 'bastard', 'slut', 'douche'];
       return text.replace(new RegExp(`\\b(${badWords.join('|')})\\b`, 'gi'), '***');
@@ -362,7 +390,7 @@
           <td class="p-4 font-bold text-blue-600 dark:text-blue-400">${data.code}</td>
           <td class="p-4">${data.description}</td>
           <td class="p-4 text-right">
-            ${isAdmin ? `<button onclick="openAdminModal('${data.code}', \`${data.description}\`, \`${data.escalationPath}\`); event.stopPropagation();" class="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 mr-2">Edit</button><button onclick="deleteError('${data.code}'); event.stopPropagation();" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">Del</button>` : ''}
+            ${isAdmin ? `<button onclick="openAdminModal('${data.code}', \`${data.description.replace(/"/g, '&quot;')}\`, \`${data.escalationPath.replace(/"/g, '&quot;')}\`); event.stopPropagation();" class="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 mr-2">Edit</button><button onclick="deleteError('${data.code}'); event.stopPropagation();" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">Del</button>` : ''}
             <span class="text-xs text-slate-400 ml-2 inline-block">View &rarr;</span>
           </td>
         </tr>`).join('') || `<tr><td colspan="3" class="p-8 text-center italic text-slate-500">No results found.</td></tr>`;
@@ -373,9 +401,109 @@
       renderDictionaryTable(globalDictionary.filter(i => i.code.toLowerCase().includes(input) || i.description.toLowerCase().includes(input)));
     }
 
+    // --- LINKS MANAGEMENT ---
+    let globalLinks = [];
+    async function loadLinksFromCloud() {
+      try {
+        const snapshot = await db.collection("links").get();
+        globalLinks = [];
+        snapshot.forEach(doc => globalLinks.push(doc.data()));
+        renderLinksTable();
+      } catch (e) { showToast("Error loading links.", "error"); }
+    }
+
+    function renderLinksTable() {
+      const container = document.getElementById('linksGrid');
+      if (globalLinks.length === 0) {
+        container.innerHTML = '<p class="text-slate-500 italic text-sm">No helpful links found. Add some using the Admin Panel.</p>';
+        return;
+      }
+      
+      container.innerHTML = globalLinks.map(link => `
+        <div class="relative block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+          ${isAdmin ? `<div class="absolute top-2 right-2 flex gap-2">
+            <button onclick="openLinkAdminModal('${link.id}')" class="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 z-10">Edit</button>
+            <button onclick="deleteLink('${link.id}')" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 z-10">Del</button>
+          </div>` : ''}
+          <a href="${link.url}" target="_blank" class="block h-full">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400 pr-16">${link.title}</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${link.description}</p>
+          </a>
+        </div>
+      `).join('');
+    }
+
+    function openLinkAdminModal(id = '') {
+      const link = globalLinks.find(l => l.id === id) || { title: '', url: '', description: '' };
+      document.getElementById('adminLinkId').value = id;
+      document.getElementById('adminLinkTitle').value = link.title;
+      document.getElementById('adminLinkUrl').value = link.url;
+      document.getElementById('adminLinkDesc').value = link.description;
+      document.getElementById('linkAdminModalTitle').innerText = id ? 'Edit Link' : 'Add New Link';
+      document.getElementById('linkAdminModal').classList.remove('hidden');
+    }
+
+    function closeLinkAdminModal() { document.getElementById('linkAdminModal').classList.add('hidden'); }
+
+    async function saveAdminLink(e) {
+      e.preventDefault();
+      if(!isAdmin) return;
+      const idInput = document.getElementById('adminLinkId').value;
+      const docId = idInput || 'link_' + Date.now();
+
+      try {
+        await db.collection("links").doc(docId).set({
+          id: docId,
+          title: document.getElementById('adminLinkTitle').value.trim(),
+          url: document.getElementById('adminLinkUrl').value.trim(),
+          description: document.getElementById('adminLinkDesc').value.trim(),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        closeLinkAdminModal();
+        loadLinksFromCloud();
+        showToast("Link saved successfully.");
+      } catch(err) { showToast("Failed to save link.", "error"); }
+    }
+
+    async function deleteLink(id) {
+      if(!isAdmin) return;
+      if(confirm('Delete this link?')) {
+        await db.collection("links").doc(id).delete();
+        loadLinksFromCloud();
+        showToast("Link deleted.");
+      }
+    }
+
+    async function restoreDefaultLinks() {
+      if(!isAdmin) return;
+      if(!confirm("This will upload all original default links to your database. Proceed?")) return;
+
+      const defaultLinks = [
+        { id: "link_1", title: "Xfinity Mobile Home", url: "https://www.xfinity.com/mobile/", desc: "Public-facing Xfinity Mobile storefront and plan info." },
+        { id: "link_2", title: "BYOD IMEI Lookup", url: "https://xm360.xfinity.com/LookupIMEI", desc: "Direct link to XM360 to verify Bring Your Own Device eligibility." },
+        { id: "link_3", title: "Mobile Savings Calculator", url: "https://www.xfinity.com/learn/mobile/plan/savings-calculator/", desc: "Tool to show customers how much they will save switching." },
+        { id: "link_4", title: "Mobile Deals (Internal KB)", url: "https://celestial.cable.comcast.com/knowledge/article-info/?query=240319165608377", desc: "Internal knowledge base article for current mobile promotions." },
+        { id: "link_5", title: "Device Activation Help", url: "https://celestial.cable.comcast.com/knowledge/article-info/?query=200826155424716", desc: "Internal knowledge base article for activation troubleshooting." },
+        { id: "link_6", title: "Device Trade-in List", url: "https://celestial.cable.comcast.com/knowledge/article-info/?query=241125144759307", desc: "Internal knowledge base article detailing eligible trade-in models and values." },
+        { id: "link_7", title: "Enterprise Ticketing Support", url: "https://ecm.comcast.com/ecm?id=ecm_taxonomy_topic&topic_id=fd2fd5178713c1105e69ec2e0ebb358e", desc: "Ticketing hub for submitting Tier 2 support escalations." },
+        { id: "link_8", title: "Porting Tool", url: "https://fetchitup.comcast.com/#/cpi/", desc: "Porting information and customer profile tool." },
+        { id: "link_9", title: "Network Management Tool", url: "https://xmtool.cable.comcast.com/xmnmtoolkit", desc: "Network Toolkit for advanced support." }
+      ];
+
+      try {
+        const batch = db.batch();
+        defaultLinks.forEach(link => {
+          batch.set(db.collection("links").doc(link.id), link);
+        });
+        await batch.commit();
+        showToast("Default links restored!");
+        loadLinksFromCloud();
+      } catch (err) { showToast("Failed to restore default links.", "error"); }
+    }
+
+
     // --- WORKAROUND CARDS & SOCIAL FEATURES ---
     
-    // Builds the robust "Social Media" card for a workaround
     function buildWorkaroundCard(docId, note) {
       const timeStr = note.timestamp ? note.timestamp.toDate().toLocaleDateString() : "Recently";
       const upvotes = note.upvotes || 0;
@@ -410,7 +538,7 @@
               ${upvotes} Helpful
             </button>
             <button onclick="document.getElementById('comments-${docId}').classList.toggle('hidden')" class="flex items-center hover:text-blue-600 transition">
-              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03-8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
               ${comments.length} Comments
             </button>
           </div>
@@ -483,7 +611,7 @@
       const errorData = globalDictionary.find(i => i.code === code);
       if(!errorData) return;
 
-      switchTab('none'); // Hide others
+      switchTab('none'); 
       document.getElementById('view-details').classList.remove('hidden');
       document.getElementById('detailTitle').innerText = errorData.code;
       document.getElementById('detailDesc').innerText = errorData.description;
@@ -494,12 +622,11 @@
 
       if(currentDetailsUnsubscribe) currentDetailsUnsubscribe();
       
-      // Fetch specific code's workarounds and sort them by highest upvotes in memory
       currentDetailsUnsubscribe = db.collection("workarounds").where("code", "==", code).orderBy("timestamp", "desc").onSnapshot(snap => {
         if(snap.empty) { container.innerHTML = `<p class="text-slate-500 text-sm italic">No community workarounds submitted for ${code} yet.</p>`; return; }
         
         let docs = snap.docs.map(d => ({id: d.id, data: d.data()}));
-        docs.sort((a, b) => (b.data.upvotes || 0) - (a.data.upvotes || 0)); // Sort highest upvotes to top
+        docs.sort((a, b) => (b.data.upvotes || 0) - (a.data.upvotes || 0)); 
         
         container.innerHTML = docs.map(doc => buildWorkaroundCard(doc.id, doc.data)).join('');
       });
