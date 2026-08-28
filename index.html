@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System 360 Error Pathing & Community Hub</title>
+  <title>Mobile Error Pathing & Community Hub</title>
   
+  <!-- Google Search Console Verification -->
   <meta name="google-site-verification" content="U6GnfIT6DDV8mJdt8JLELEokYvEFZOFqoaBEXLkrILg" />
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,6 +17,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 font-sans transition-colors duration-300" onload="initApp()">
 
+  <!-- LOGIN SCREEN (Google Auth or Guest) -->
   <div id="loginOverlay" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center transition-opacity duration-300">
     <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full text-center">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Project Prototype</h2>
@@ -38,8 +40,10 @@
     </div>
   </div>
 
+  <!-- MAIN APP CONTAINER -->
   <div id="mainApp" class="hidden min-h-screen relative">
     
+    <!-- HEADER BAR: Theme Toggle & Logout -->
     <div class="absolute top-4 right-6 z-50 flex items-center space-x-4">
       <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition">
         🌓
@@ -50,8 +54,9 @@
 
     <div class="max-w-6xl mx-auto w-full p-6 pb-20 mt-8">
       
+      <!-- Header & Navigation -->
       <header class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">System 360 Error Resolution Hub</h1>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Mobile Error Resolution Hub</h1>
         <p class="text-slate-500 dark:text-slate-400 mt-2">Find escalation paths and community fixes.</p>
         
         <div class="flex flex-wrap justify-center gap-4 mt-6 border-b border-slate-200 dark:border-slate-700 pb-4">
@@ -61,8 +66,10 @@
         </div>
       </header>
 
+      <!-- TAB 1: COMBINED HUB (Dictionary + Search) -->
       <div id="view-hub" class="block">
         
+        <!-- ADMIN CONTROL PANEL -->
         <div id="adminControls" class="hidden mb-6 bg-slate-800 text-white p-5 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-center border border-slate-700">
           <div class="mb-4 md:mb-0 text-center md:text-left">
             <h3 class="font-bold text-lg flex items-center justify-center md:justify-start">
@@ -76,10 +83,12 @@
           </div>
         </div>
 
+        <!-- Search & Filter Bar -->
         <div class="flex justify-between items-center mb-6">
           <input type="text" id="filterInput" onkeyup="filterDictionary()" placeholder="Search error codes or keywords..." class="w-full p-3 border border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase shadow-sm">
         </div>
 
+        <!-- Dictionary Grid -->
         <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
           <table class="w-full text-left border-collapse" id="dictionaryTable">
             <thead>
@@ -96,6 +105,7 @@
         </div>
       </div>
 
+      <!-- ERROR DETAILS VIEW -->
       <div id="view-details" class="hidden">
         <button onclick="switchTab('hub')" class="mb-6 text-blue-600 dark:text-blue-400 font-bold flex items-center hover:underline">
           &larr; Back to Dictionary
@@ -119,11 +129,13 @@
           <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-full flex flex-col">
             <h3 class="text-xl font-bold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 text-blue-600 dark:text-blue-400">Community Workarounds</h3>
             <div class="space-y-4 overflow-y-auto max-h-96" id="detailCommunityNotes">
-              </div>
+              <!-- Dynamically populated from Firebase -->
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- TAB: HELPFUL LINKS -->
       <div id="view-links" class="hidden max-w-4xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <a href="https://www.xfinity.com/mobile/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
@@ -132,14 +144,14 @@
           </a>
           <a href="https://xm360.xfinity.com/LookupIMEI" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
             <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">BYOD IMEI Lookup</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Direct link to XM360 to verify Bring Your Own Device eligibility.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Direct link to verification to verify Bring Your Own Device eligibility.</p>
           </a>
           <a href="https://www.xfinity.com/learn/mobile/plan/savings-calculator/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">XM Savings Calculator</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Tool to show customers how much they will save switching to XM.</p>
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Savings Calculator</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Tool to show customers how much they will save switching.</p>
           </a>
           <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=240319165608377" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Deals (Celestial)</h3>
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Deals (Internal KB)</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article for current mobile promotions.</p>
           </a>
           <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=200826155424716" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
@@ -151,20 +163,21 @@
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article detailing eligible trade-in models and values.</p>
           </a>
           <a href="https://ecm.comcast.com/ecm?id=ecm_taxonomy_topic&topic_id=fd2fd5178713c1105e69ec2e0ebb358e" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">ECM XM Support</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Enterprise Case Management hub for submitting Tier 2 support tickets.</p>
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Enterprise Ticketing Support</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ticketing hub for submitting Tier 2 support escalations.</p>
           </a>
           <a href="https://fetchitup.comcast.com/#/cpi/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Fetchitup</h3>
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Porting Tool</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Porting information and customer profile tool.</p>
           </a>
           <a href="https://xmtool.cable.comcast.com/xmnmtoolkit" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">XM Network Tool</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Network Management Toolkit for advanced support.</p>
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Network Management Tool</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Network Toolkit for advanced support.</p>
           </a>
         </div>
       </div>
 
+      <!-- TAB: COMMUNITY -->
       <div id="view-community" class="hidden max-w-5xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="md:col-span-2 space-y-6">
@@ -184,6 +197,7 @@
               <div class="relative">
                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Error Code</label>
                 <input type="text" id="fixCode" oninput="suggestCodes()" autocomplete="off" placeholder="e.g., MBC-7305" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" required>
+                <!-- Code Suggestion Dropdown -->
                 <div id="codeSuggestions" class="absolute z-10 w-full bg-white dark:bg-slate-700 shadow-lg border border-slate-200 dark:border-slate-600 max-h-40 overflow-y-auto hidden mt-1 rounded"></div>
               </div>
 
@@ -203,6 +217,7 @@
     </div>
   </div>
 
+  <!-- ADMIN MODAL (For editing/adding dictionary codes) -->
   <div id="adminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[110] flex items-center justify-center">
     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl w-full max-w-lg">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4" id="adminModalTitle">Add/Edit Code</h2>
@@ -227,6 +242,7 @@
     </div>
   </div>
 
+  <!-- FIREBASE SDKS -->
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
@@ -281,7 +297,6 @@
           loadDictionaryFromCloud();
           listenForCommunityNotes();
         } else {
-          // If not authenticated, ensure login overlay is visible unless they click "Continue as Guest"
           if (!currentUser || !currentUser.isGuest) {
             document.getElementById('loginOverlay').classList.remove('hidden');
             document.getElementById('mainApp').classList.add('hidden');
@@ -308,7 +323,6 @@
       document.getElementById('adminControls').classList.add('hidden');
       document.getElementById('adminControls').classList.remove('flex');
       
-      // Require Name input for guest submissions
       document.getElementById('guestNameField').classList.remove('hidden');
       document.getElementById('fixAuthor').required = true;
 
@@ -483,7 +497,6 @@
       if(confirm(`Are you sure you want to delete this community workaround?`)) {
         try {
           await db.collection("workarounds").doc(docId).delete();
-          // To refresh the view, we just re-trigger the openDetails if we are in that view
           const currentCode = document.getElementById('detailTitle').innerText;
           if(currentCode) openDetails(currentCode);
         } catch(err) {
@@ -495,14 +508,12 @@
 
     // --- 6. PROFANITY FILTER, SUGGESTIONS & COMMUNITY SUBMISSIONS ---
     
-    // Robust Profanity Filter
     function cleanProfanity(text) {
       const badWords = ['fuck', 'fucking', 'shit', 'bitch', 'asshole', 'crap', 'damn', 'cunt', 'dick', 'piss', 'bastard', 'slut', 'douche'];
       const regex = new RegExp(`\\b(${badWords.join('|')})\\b`, 'gi');
       return text.replace(regex, '***');
     }
 
-    // "Did you mean" Auto-suggest logic
     function suggestCodes() {
       const input = document.getElementById('fixCode').value.trim().toUpperCase();
       const suggBox = document.getElementById('codeSuggestions');
@@ -531,7 +542,6 @@
       document.getElementById('codeSuggestions').classList.add('hidden');
     }
 
-    // Close suggestions if clicking outside
     document.addEventListener('click', function(e) {
       if(document.getElementById('fixCode') !== e.target) {
         document.getElementById('codeSuggestions').classList.add('hidden');
@@ -544,7 +554,6 @@
       const rawSolution = document.getElementById('fixSolution').value.trim();
       let authorField = document.getElementById('fixAuthor').value.trim();
       
-      // Guest Name Validation
       if (currentUser.isGuest) {
         if (!authorField || !authorField.includes(' ')) {
           alert("Guests must provide a First Name and Last Initial (e.g., 'John D.').");
@@ -552,7 +561,6 @@
         }
       }
 
-      // "Did you mean?" Code Validation
       const exactMatch = globalDictionary.find(item => item.code === code);
       if(!exactMatch) {
         const closeMatch = globalDictionary.find(item => item.code.startsWith(code) || item.code.includes(code));
