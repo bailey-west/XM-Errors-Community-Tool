@@ -4,20 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mobile Error Pathing & Community Hub</title>
-  
-  <!-- Google Search Console Verification -->
   <meta name="google-site-verification" content="U6GnfIT6DDV8mJdt8JLELEokYvEFZOFqoaBEXLkrILg" />
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
+    tailwind.config = { darkMode: 'class' }
   </script>
+  <style>
+    /* Minimalist Scrollbar Customization */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+    .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+    .dark ::-webkit-scrollbar-thumb:hover { background-color: #64748b; }
+    
+    /* Toast Animation */
+    @keyframes slideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .toast-enter { animation: slideIn 0.3s ease-out forwards; }
+    
+    /* Button Spinner */
+    .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 font-sans transition-colors duration-300" onload="initApp()">
 
-  <!-- LOGIN SCREEN (Google Auth or Guest) -->
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none"></div>
+
+  <!-- LOGIN SCREEN -->
   <div id="loginOverlay" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center transition-opacity duration-300">
     <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full text-center">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Project Prototype</h2>
@@ -43,18 +58,15 @@
   <!-- MAIN APP CONTAINER -->
   <div id="mainApp" class="hidden min-h-screen relative">
     
-    <!-- HEADER BAR: Theme Toggle & Logout -->
+    <!-- HEADER BAR -->
     <div class="absolute top-4 right-6 z-50 flex items-center space-x-4">
-      <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition">
-        🌓
-      </button>
+      <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition">🌓</button>
       <div class="text-sm font-semibold dark:text-slate-300" id="userDisplayName"></div>
       <button onclick="signOut()" class="text-sm text-red-600 dark:text-red-400 font-bold hover:underline">Sign Out</button>
     </div>
 
     <div class="max-w-6xl mx-auto w-full p-6 pb-20 mt-8">
       
-      <!-- Header & Navigation -->
       <header class="mb-8 text-center">
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Mobile Error Resolution Hub</h1>
         <p class="text-slate-500 dark:text-slate-400 mt-2">Find escalation paths and community fixes.</p>
@@ -66,29 +78,24 @@
         </div>
       </header>
 
-      <!-- TAB 1: COMBINED HUB (Dictionary + Search) -->
+      <!-- TAB 1: HUB -->
       <div id="view-hub" class="block">
-        
-        <!-- ADMIN CONTROL PANEL -->
-        <div id="adminControls" class="hidden mb-6 bg-slate-800 text-white p-5 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-center border border-slate-700">
+        <div id="adminControls" class="hidden mb-6 bg-slate-800 text-white p-5 rounded-lg shadow-md flex-col md:flex-row justify-between items-center border border-slate-700">
           <div class="mb-4 md:mb-0 text-center md:text-left">
             <h3 class="font-bold text-lg flex items-center justify-center md:justify-start">
               <svg class="w-5 h-5 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
               Admin Control Panel
             </h3>
-            <p class="text-sm text-slate-300">You have active read/write privileges for the Dictionary and Workarounds.</p>
+            <p class="text-sm text-slate-300">You have active read/write privileges.</p>
           </div>
-          <div class="flex space-x-3">
-            <button onclick="openAdminModal()" class="bg-green-600 px-4 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm text-sm">+ Add New Code</button>
-          </div>
+          <button onclick="openAdminModal()" class="bg-green-600 px-4 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm text-sm">+ Add New Code</button>
         </div>
 
-        <!-- Search & Filter Bar -->
-        <div class="flex justify-between items-center mb-6">
-          <input type="text" id="filterInput" onkeyup="filterDictionary()" placeholder="Search error codes or keywords..." class="w-full p-3 border border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase shadow-sm">
+        <div class="flex justify-between items-center mb-6 relative group">
+          <input type="text" id="filterInput" onkeyup="filterDictionary()" placeholder="Search error codes or keywords... (Press / to focus)" class="w-full p-4 pl-10 border border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase shadow-sm transition">
+          <svg class="w-5 h-5 absolute left-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
 
-        <!-- Dictionary Grid -->
         <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
           <table class="w-full text-left border-collapse" id="dictionaryTable">
             <thead>
@@ -112,24 +119,28 @@
         </button>
         
         <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="text-3xl font-black text-slate-800 dark:text-white uppercase" id="detailTitle"></h2>
-              <p class="text-slate-600 dark:text-slate-400 mt-1 font-medium text-lg" id="detailDesc"></p>
-            </div>
-          </div>
+          <h2 class="text-3xl font-black text-slate-800 dark:text-white uppercase" id="detailTitle"></h2>
+          <p class="text-slate-600 dark:text-slate-400 mt-1 font-medium text-lg" id="detailDesc"></p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-full flex flex-col">
-            <h3 class="text-xl font-bold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 text-red-600 dark:text-red-400">Escalation Path</h3>
+          <!-- Escalation Path -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-full flex flex-col relative">
+            <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2 mb-4">
+              <h3 class="text-xl font-bold text-slate-800 dark:text-white text-red-600 dark:text-red-400">Escalation Path</h3>
+              <button onclick="copyEscalationPath()" class="text-sm flex items-center text-slate-500 hover:text-blue-600 transition bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                Copy
+              </button>
+            </div>
             <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-6 whitespace-pre-wrap" id="detailPath"></p>
           </div>
           
+          <!-- Community Notes -->
           <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-full flex flex-col">
             <h3 class="text-xl font-bold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 text-blue-600 dark:text-blue-400">Community Workarounds</h3>
-            <div class="space-y-4 overflow-y-auto max-h-96" id="detailCommunityNotes">
-              <!-- Dynamically populated from Firebase -->
+            <div class="space-y-4 overflow-y-auto max-h-[500px] pr-2" id="detailCommunityNotes">
+              <!-- Rendered via JS -->
             </div>
           </div>
         </div>
@@ -138,41 +149,17 @@
       <!-- TAB: HELPFUL LINKS -->
       <div id="view-links" class="hidden max-w-4xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <a href="https://www.xfinity.com/mobile/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Xfinity Mobile Home</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Public-facing Xfinity Mobile storefront and plan info.</p>
+          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Company Mobile Home</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Public-facing mobile storefront.</p>
           </a>
-          <a href="https://xm360.xfinity.com/LookupIMEI" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
             <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">BYOD IMEI Lookup</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Direct link to verification to verify Bring Your Own Device eligibility.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Direct link to system to verify Bring Your Own Device eligibility.</p>
           </a>
-          <a href="https://www.xfinity.com/learn/mobile/plan/savings-calculator/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Savings Calculator</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Tool to show customers how much they will save switching.</p>
-          </a>
-          <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=240319165608377" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Deals (Internal KB)</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article for current mobile promotions.</p>
-          </a>
-          <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=200826155424716" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Device Activation Help</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article for activation troubleshooting.</p>
-          </a>
-          <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=241125144759307" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Device Trade-in List</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article detailing eligible trade-in models and values.</p>
-          </a>
-          <a href="https://ecm.comcast.com/ecm?id=ecm_taxonomy_topic&topic_id=fd2fd5178713c1105e69ec2e0ebb358e" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
             <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Enterprise Ticketing Support</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ticketing hub for submitting Tier 2 support escalations.</p>
-          </a>
-          <a href="https://fetchitup.comcast.com/#/cpi/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Porting Tool</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Porting information and customer profile tool.</p>
-          </a>
-          <a href="https://xmtool.cable.comcast.com/xmnmtoolkit" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Network Management Tool</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Network Toolkit for advanced support.</p>
           </a>
         </div>
       </div>
@@ -183,7 +170,7 @@
           <div class="md:col-span-2 space-y-6">
             <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
               <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">Recent Global Workarounds</h2>
-              <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2" id="communityFeed">
+              <div class="space-y-4 max-h-[700px] overflow-y-auto pr-2" id="communityFeed">
                 <p class="text-slate-500 text-sm italic">Loading feed...</p>
               </div>
             </div>
@@ -193,14 +180,11 @@
             <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Contribute a Fix</h2>
             <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Found a reliable bypass? Share it.</p>
             <form onsubmit="submitFix(event)" class="space-y-4">
-              
               <div class="relative">
                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Error Code</label>
                 <input type="text" id="fixCode" oninput="suggestCodes()" autocomplete="off" placeholder="e.g., MBC-7305" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" required>
-                <!-- Code Suggestion Dropdown -->
                 <div id="codeSuggestions" class="absolute z-10 w-full bg-white dark:bg-slate-700 shadow-lg border border-slate-200 dark:border-slate-600 max-h-40 overflow-y-auto hidden mt-1 rounded"></div>
               </div>
-
               <div>
                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Solution</label>
                 <textarea rows="4" id="fixSolution" placeholder="Step-by-step bypass..." class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
@@ -209,7 +193,7 @@
                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Name (First & Last Initial) <span class="text-red-500">*</span></label>
                 <input type="text" id="fixAuthor" placeholder="e.g., John D." class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
               </div>
-              <button type="submit" class="w-full bg-green-600 text-white px-4 py-3 rounded font-bold hover:bg-green-700 transition shadow">Submit to Network</button>
+              <button type="submit" id="submitBtn" class="w-full bg-green-600 text-white px-4 py-3 rounded font-bold hover:bg-green-700 transition shadow disabled:opacity-75 disabled:cursor-not-allowed">Submit to Network</button>
             </form>
           </div>
         </div>
@@ -217,7 +201,7 @@
     </div>
   </div>
 
-  <!-- ADMIN MODAL (For editing/adding dictionary codes) -->
+  <!-- ADMIN MODAL -->
   <div id="adminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[110] flex items-center justify-center">
     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl w-full max-w-lg">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4" id="adminModalTitle">Add/Edit Code</h2>
@@ -248,15 +232,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // --- 1. FIREBASE CONFIGURATION & ADMIN SETUP ---
+    // --- 1. FIREBASE CONFIGURATION ---
     const firebaseConfig = {
       apiKey: "AIzaSyD-0fiYyx-AbaU5B5Ep378ZULmBDP5CvrI",
       authDomain: "xm360-hub.firebaseapp.com",
       projectId: "xm360-hub",
       storageBucket: "xm360-hub.firebasestorage.app",
       messagingSenderId: "578131266407",
-      appId: "1:578131266407:web:fde344903938c5176dbdc2",
-      measurementId: "G-02K95FH3ED"
+      appId: "1:578131266407:web:fde344903938c5176dbdc2"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -266,22 +249,24 @@
     const ADMIN_EMAILS = ['baileyrobertwest@gmail.com'];
     let currentUser = null;
     let isAdmin = false;
+    let currentDetailsUnsubscribe = null; // Used to kill active listeners when switching views
+
+    // Generate unique guest ID to track upvotes without logging in
+    let localUserId = localStorage.getItem('localUserId');
+    if(!localUserId) {
+      localUserId = 'guest_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('localUserId', localUserId);
+    }
 
     // --- 2. AUTHENTICATION & INITIALIZATION ---
     function initApp() {
       if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
       }
 
       auth.onAuthStateChanged((user) => {
         if (user) {
-          currentUser = {
-            isGuest: false,
-            displayName: user.displayName || user.email.split('@')[0],
-            email: user.email
-          };
+          currentUser = { isGuest: false, displayName: user.displayName || user.email.split('@')[0], email: user.email };
           isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
           document.getElementById('userDisplayName').innerText = currentUser.displayName;
           document.getElementById('loginOverlay').classList.add('hidden');
@@ -295,7 +280,7 @@
           document.getElementById('fixAuthor').required = false;
 
           loadDictionaryFromCloud();
-          listenForCommunityNotes();
+          listenForGlobalFeed();
         } else {
           if (!currentUser || !currentUser.isGuest) {
             document.getElementById('loginOverlay').classList.remove('hidden');
@@ -306,333 +291,314 @@
     }
 
     function signInWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch(error => {
-        console.error("Auth Error:", error);
-        alert("Sign-in failed. Please try again.");
-      });
+      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(err => showToast("Sign-in failed.", "error"));
     }
 
     function continueAsGuest() {
       currentUser = { isGuest: true, displayName: "Guest User" };
       isAdmin = false;
-      
       document.getElementById('userDisplayName').innerText = "Guest User";
       document.getElementById('loginOverlay').classList.add('hidden');
       document.getElementById('mainApp').classList.remove('hidden');
-      document.getElementById('adminControls').classList.add('hidden');
-      document.getElementById('adminControls').classList.remove('flex');
-      
       document.getElementById('guestNameField').classList.remove('hidden');
       document.getElementById('fixAuthor').required = true;
-
       loadDictionaryFromCloud();
-      listenForCommunityNotes();
+      listenForGlobalFeed();
     }
 
     function signOut() {
-      auth.signOut().then(() => {
-        currentUser = null;
-        isAdmin = false;
-        window.location.reload();
-      });
+      auth.signOut().then(() => { currentUser = null; window.location.reload(); });
     }
 
     function toggleDarkMode() {
-      const html = document.documentElement;
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        localStorage.theme = 'light';
-      } else {
-        html.classList.add('dark');
-        localStorage.theme = 'dark';
-      }
+      document.documentElement.classList.toggle('dark');
+      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     }
 
-    // --- 3. DICTIONARY & HUB LOGIC ---
-    let globalDictionary = [];
+    // --- TOASTS & UTILS ---
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const bgColor = type === 'error' ? 'bg-red-600' : 'bg-green-600';
+      toast.className = `toast-enter pointer-events-auto ${bgColor} text-white px-5 py-3 rounded-lg shadow-xl text-sm font-semibold flex items-center`;
+      toast.innerHTML = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${type === 'error' ? 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' : 'M5 13l4 4L19 7'}"></path></svg> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.replace('toast-enter', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
+    }
 
+    function copyEscalationPath() {
+      const text = document.getElementById('detailPath').innerText;
+      navigator.clipboard.writeText(text).then(() => showToast("Escalation Path copied to clipboard!"));
+    }
+
+    // Keyboard Shortcuts (Press '/' to search)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        document.getElementById('filterInput').focus();
+      }
+    });
+
+    function cleanProfanity(text) {
+      const badWords = ['fuck', 'fucking', 'shit', 'bitch', 'asshole', 'crap', 'damn', 'cunt', 'dick', 'piss', 'bastard', 'slut', 'douche'];
+      return text.replace(new RegExp(`\\b(${badWords.join('|')})\\b`, 'gi'), '***');
+    }
+
+    // --- DICTIONARY ---
+    let globalDictionary = [];
     async function loadDictionaryFromCloud() {
-      const tbody = document.getElementById('dictionaryBody');
       try {
         const snapshot = await db.collection("errors").orderBy("code").get();
-        if (snapshot.empty) {
-          tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center italic text-slate-500">Database is empty. Add codes via the Admin panel.</td></tr>';
-          return;
-        }
-
         globalDictionary = [];
         snapshot.forEach(doc => globalDictionary.push(doc.data()));
         renderDictionaryTable(globalDictionary);
-      } catch (error) {
-        console.error("Error loading dictionary:", error);
-        tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-red-500">Error connecting to database. Check rules.</td></tr>';
-      }
+      } catch (e) { showToast("Error loading dictionary.", "error"); }
     }
 
     function renderDictionaryTable(dataList) {
       const tbody = document.getElementById('dictionaryBody');
-      let html = '';
-      dataList.forEach(data => {
-        let adminActions = isAdmin ? `
-          <button onclick="openAdminModal('${data.code}', \`${data.description}\`, \`${data.escalationPath}\`); event.stopPropagation();" class="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 mr-2">Edit</button>
-          <button onclick="deleteError('${data.code}'); event.stopPropagation();" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">Del</button>
-        ` : '';
-
-        html += `<tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer" onclick="openDetails('${data.code}')">
-                  <td class="p-4 font-bold text-blue-600 dark:text-blue-400">${data.code}</td>
-                  <td class="p-4">${data.description}</td>
-                  <td class="p-4 text-right">${adminActions} <span class="text-xs text-slate-400 ml-2 inline-block">View &rarr;</span></td>
-                 </tr>`;
-      });
-      tbody.innerHTML = html;
+      tbody.innerHTML = dataList.map(data => `
+        <tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer" onclick="openDetails('${data.code}')">
+          <td class="p-4 font-bold text-blue-600 dark:text-blue-400">${data.code}</td>
+          <td class="p-4">${data.description}</td>
+          <td class="p-4 text-right">
+            ${isAdmin ? `<button onclick="openAdminModal('${data.code}', \`${data.description}\`, \`${data.escalationPath}\`); event.stopPropagation();" class="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 mr-2">Edit</button><button onclick="deleteError('${data.code}'); event.stopPropagation();" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">Del</button>` : ''}
+            <span class="text-xs text-slate-400 ml-2 inline-block">View &rarr;</span>
+          </td>
+        </tr>`).join('') || `<tr><td colspan="3" class="p-8 text-center italic text-slate-500">No results found.</td></tr>`;
     }
 
     function filterDictionary() {
       const input = document.getElementById('filterInput').value.toLowerCase();
-      const filtered = globalDictionary.filter(item => 
-        item.code.toLowerCase().includes(input) || 
-        item.description.toLowerCase().includes(input)
-      );
-      renderDictionaryTable(filtered);
+      renderDictionaryTable(globalDictionary.filter(i => i.code.toLowerCase().includes(input) || i.description.toLowerCase().includes(input)));
     }
 
-    // --- 4. DETAILS VIEW LOGIC ---
+    // --- WORKAROUND CARDS & SOCIAL FEATURES ---
+    
+    // Builds the robust "Social Media" card for a workaround
+    function buildWorkaroundCard(docId, note) {
+      const timeStr = note.timestamp ? note.timestamp.toDate().toLocaleDateString() : "Recently";
+      const upvotes = note.upvotes || 0;
+      const uid = currentUser?.email || localUserId;
+      const isUpvoted = (note.upvotedBy || []).includes(uid);
+      const comments = note.comments || [];
+      const adminDel = isAdmin ? `<button onclick="deleteWorkaround('${docId}')" class="text-red-500 hover:text-red-700 text-xs font-bold transition">Delete</button>` : '';
+
+      let commentsHtml = comments.map(c => `
+        <div class="mb-2 last:mb-0">
+          <span class="font-bold text-xs text-slate-800 dark:text-slate-300">${c.author}</span>
+          <span class="text-xs text-slate-500 ml-2 border-l border-slate-300 dark:border-slate-600 pl-2">${new Date(c.timestamp).toLocaleDateString()}</span>
+          <p class="text-sm text-slate-700 dark:text-slate-400 mt-1">${c.text}</p>
+        </div>
+      `).join('');
+
+      return `
+        <div class="bg-white dark:bg-slate-700 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 mb-4 transition-all">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              <span class="font-bold text-slate-900 dark:text-white">${note.author}</span>
+              <span class="text-xs text-slate-500 ml-2">${timeStr}</span>
+            </div>
+            ${adminDel}
+          </div>
+          <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded font-bold mb-3 cursor-pointer hover:underline" onclick="openDetails('${note.code}')">${note.code}</span>
+          <p class="text-sm text-slate-800 dark:text-slate-200 mb-4 whitespace-pre-wrap leading-relaxed">${note.solution}</p>
+          
+          <div class="flex items-center gap-6 text-sm font-semibold text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-600 pt-3">
+            <button onclick="toggleUpvote('${docId}')" class="flex items-center transition hover:text-blue-600 dark:hover:text-blue-400 ${isUpvoted ? 'text-blue-600 dark:text-blue-400' : ''}">
+              <svg class="w-5 h-5 mr-1" fill="${isUpvoted ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+              ${upvotes} Helpful
+            </button>
+            <button onclick="document.getElementById('comments-${docId}').classList.toggle('hidden')" class="flex items-center hover:text-blue-600 transition">
+              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+              ${comments.length} Comments
+            </button>
+          </div>
+
+          <div id="comments-${docId}" class="hidden mt-4 bg-slate-50 dark:bg-slate-800 p-3 rounded border border-slate-100 dark:border-slate-600">
+            <div class="mb-3 max-h-40 overflow-y-auto pr-2">${commentsHtml || '<span class="text-xs text-slate-500 italic">No comments yet.</span>'}</div>
+            <div class="flex gap-2">
+              <input type="text" id="comment-input-${docId}" class="flex-grow p-2 text-sm border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Add a comment...">
+              <button onclick="postComment('${docId}')" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-4 py-2 rounded transition">Post</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function toggleUpvote(docId) {
+      const ref = db.collection("workarounds").doc(docId);
+      const uid = currentUser?.email || localUserId;
+      db.runTransaction(async (transaction) => {
+        const doc = await transaction.get(ref);
+        if (!doc.exists) return;
+        let upvotedBy = doc.data().upvotedBy || [];
+        let upvotes = doc.data().upvotes || 0;
+        if(upvotedBy.includes(uid)) {
+          upvotedBy = upvotedBy.filter(id => id !== uid);
+          upvotes--;
+        } else {
+          upvotedBy.push(uid);
+          upvotes++;
+        }
+        transaction.update(ref, { upvotes, upvotedBy });
+      });
+    }
+
+    async function postComment(docId) {
+      const input = document.getElementById(`comment-input-${docId}`);
+      const text = input.value.trim();
+      if(!text) return;
+      
+      let author = currentUser.displayName;
+      if (currentUser.isGuest) {
+        author = document.getElementById('fixAuthor').value.trim();
+        if (!author || !author.includes(' ')) {
+          showToast("Please provide First Name & Last Initial in the 'Contribute a Fix' form to comment as a guest.", "error");
+          document.getElementById('fixAuthor').focus();
+          return;
+        }
+      }
+
+      try {
+        await db.collection("workarounds").doc(docId).update({
+          comments: firebase.firestore.FieldValue.arrayUnion({ author, text: cleanProfanity(text), timestamp: new Date().toISOString() })
+        });
+        input.value = '';
+        showToast("Comment posted!");
+      } catch(e) { showToast("Failed to post comment.", "error"); }
+    }
+
+    // --- LIVE FEED LISTENERS ---
+    
+    function listenForGlobalFeed() {
+      db.collection("workarounds").orderBy("timestamp", "desc").limit(30).onSnapshot(snap => {
+        const feed = document.getElementById('communityFeed');
+        if(snap.empty) { feed.innerHTML = '<p class="text-slate-500 text-sm italic">No workarounds submitted yet.</p>'; return; }
+        feed.innerHTML = snap.docs.map(doc => buildWorkaroundCard(doc.id, doc.data())).join('');
+      });
+    }
+
     function openDetails(code) {
-      const errorData = globalDictionary.find(item => item.code === code);
+      const errorData = globalDictionary.find(i => i.code === code);
       if(!errorData) return;
 
-      document.getElementById('view-hub').classList.add('hidden');
+      switchTab('none'); // Hide others
       document.getElementById('view-details').classList.remove('hidden');
-
       document.getElementById('detailTitle').innerText = errorData.code;
       document.getElementById('detailDesc').innerText = errorData.description;
       document.getElementById('detailPath').innerText = errorData.escalationPath || "No escalation path defined.";
 
-      const notesContainer = document.getElementById('detailCommunityNotes');
-      notesContainer.innerHTML = '<p class="text-slate-500 text-sm italic">Loading notes...</p>';
+      const container = document.getElementById('detailCommunityNotes');
+      container.innerHTML = '<p class="text-slate-500 text-sm italic">Loading notes...</p>';
 
-      db.collection("workarounds").where("code", "==", code).orderBy("timestamp", "desc").get()
-        .then((snapshot) => {
-          if (snapshot.empty) {
-            notesContainer.innerHTML = `<p class="text-slate-500 text-sm italic">No community workarounds submitted for ${code} yet.</p>`;
-            return;
-          }
-          let notesHTML = '';
-          snapshot.forEach((doc) => {
-            const note = doc.data();
-            let timeString = note.timestamp ? note.timestamp.toDate().toLocaleDateString() : "Recently";
-            
-            let adminDeleteBtn = isAdmin ? `<button onclick="deleteWorkaround('${doc.id}'); event.stopPropagation();" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xs font-bold transition">Delete</button>` : '';
-
-            notesHTML += `
-              <div class="relative bg-indigo-50 dark:bg-slate-700 p-4 rounded text-sm border border-indigo-100 dark:border-slate-600 mb-3 shadow-sm pr-12">
-                ${adminDeleteBtn}
-                <p class="font-bold text-indigo-900 dark:text-indigo-300">${note.author} <span class="text-indigo-500 dark:text-indigo-400 font-normal ml-2 text-xs">${timeString}</span></p>
-                <p class="text-slate-800 dark:text-slate-200 mt-2">${note.solution}</p>
-              </div>
-            `;
-          });
-          notesContainer.innerHTML = notesHTML;
-        })
-        .catch(err => {
-          console.error(err);
-          notesContainer.innerHTML = '<p class="text-red-500 text-xs mt-2">Database query failed. Ensure indices are built and rules allow reading.</p>';
-        });
+      if(currentDetailsUnsubscribe) currentDetailsUnsubscribe();
+      
+      // Fetch specific code's workarounds and sort them by highest upvotes in memory
+      currentDetailsUnsubscribe = db.collection("workarounds").where("code", "==", code).orderBy("timestamp", "desc").onSnapshot(snap => {
+        if(snap.empty) { container.innerHTML = `<p class="text-slate-500 text-sm italic">No community workarounds submitted for ${code} yet.</p>`; return; }
+        
+        let docs = snap.docs.map(d => ({id: d.id, data: d.data()}));
+        docs.sort((a, b) => (b.data.upvotes || 0) - (a.data.upvotes || 0)); // Sort highest upvotes to top
+        
+        container.innerHTML = docs.map(doc => buildWorkaroundCard(doc.id, doc.data)).join('');
+      });
     }
 
-    // --- 5. ADMIN EDITING FUNCTIONS ---
-    function openAdminModal(code = '', desc = '', path = '') {
-      if(!isAdmin) return alert("Admin access required.");
-      document.getElementById('adminCode').value = code;
-      document.getElementById('adminCode').disabled = code !== ''; 
-      document.getElementById('adminDesc').value = desc;
-      document.getElementById('adminPath').value = path;
-      document.getElementById('adminModalTitle').innerText = code ? 'Edit Escalation Path' : 'Add New Error Code';
-      document.getElementById('adminModal').classList.remove('hidden');
-    }
-
-    function closeAdminModal() {
-      document.getElementById('adminModal').classList.add('hidden');
-      document.getElementById('adminCode').disabled = false;
-    }
-
-    async function saveAdminCode(e) {
-      e.preventDefault();
-      if(!isAdmin) return;
-
-      const code = document.getElementById('adminCode').value.trim().toUpperCase();
-      const desc = document.getElementById('adminDesc').value.trim();
-      const path = document.getElementById('adminPath').value.trim();
-
-      try {
-        await db.collection("errors").doc(code).set({
-          code: code,
-          description: desc,
-          escalationPath: path
-        });
-        closeAdminModal();
-        loadDictionaryFromCloud(); 
-      } catch(err) {
-        console.error(err);
-        alert("Failed to save. Check permissions.");
-      }
-    }
-
-    async function deleteError(code) {
-      if(!isAdmin) return;
-      if(confirm(`Are you sure you want to delete ${code} from the global dictionary?`)) {
-        try {
-          await db.collection("errors").doc(code).delete();
-          loadDictionaryFromCloud();
-        } catch(err) {
-          console.error(err);
-          alert("Failed to delete.");
-        }
-      }
-    }
-
-    async function deleteWorkaround(docId) {
-      if(!isAdmin) return;
-      if(confirm(`Are you sure you want to delete this community workaround?`)) {
-        try {
-          await db.collection("workarounds").doc(docId).delete();
-          const currentCode = document.getElementById('detailTitle').innerText;
-          if(currentCode) openDetails(currentCode);
-        } catch(err) {
-          console.error(err);
-          alert("Failed to delete workaround.");
-        }
-      }
-    }
-
-    // --- 6. PROFANITY FILTER, SUGGESTIONS & COMMUNITY SUBMISSIONS ---
+    // --- FORM SUBMISSION ---
     
-    function cleanProfanity(text) {
-      const badWords = ['fuck', 'fucking', 'shit', 'bitch', 'asshole', 'crap', 'damn', 'cunt', 'dick', 'piss', 'bastard', 'slut', 'douche'];
-      const regex = new RegExp(`\\b(${badWords.join('|')})\\b`, 'gi');
-      return text.replace(regex, '***');
-    }
-
-    function suggestCodes() {
-      const input = document.getElementById('fixCode').value.trim().toUpperCase();
-      const suggBox = document.getElementById('codeSuggestions');
-      
-      if(input.length < 2) { 
-        suggBox.classList.add('hidden'); 
-        return; 
-      }
-      
-      const matches = globalDictionary.filter(e => e.code.includes(input)).slice(0, 5);
-      
-      if(matches.length > 0) {
-        suggBox.innerHTML = matches.map(m => `
-          <div class="p-3 hover:bg-blue-50 dark:hover:bg-slate-600 cursor-pointer text-sm font-semibold border-b border-slate-100 dark:border-slate-600 last:border-0" 
-               onclick="selectSuggestion('${m.code}')">
-            ${m.code} <span class="text-slate-400 font-normal ml-2 truncate inline-block max-w-[200px] align-bottom">${m.description}</span>
-          </div>`).join('');
-        suggBox.classList.remove('hidden');
-      } else {
-        suggBox.classList.add('hidden');
-      }
-    }
-
-    function selectSuggestion(code) {
-      document.getElementById('fixCode').value = code;
-      document.getElementById('codeSuggestions').classList.add('hidden');
-    }
-
-    document.addEventListener('click', function(e) {
-      if(document.getElementById('fixCode') !== e.target) {
-        document.getElementById('codeSuggestions').classList.add('hidden');
-      }
-    });
-
     async function submitFix(e) {
       e.preventDefault();
+      const btn = document.getElementById('submitBtn');
       const code = document.getElementById('fixCode').value.trim().toUpperCase();
-      const rawSolution = document.getElementById('fixSolution').value.trim();
-      let authorField = document.getElementById('fixAuthor').value.trim();
+      let author = document.getElementById('fixAuthor').value.trim();
       
-      if (currentUser.isGuest) {
-        if (!authorField || !authorField.includes(' ')) {
-          alert("Guests must provide a First Name and Last Initial (e.g., 'John D.').");
-          return;
-        }
+      if (currentUser.isGuest && (!author || !author.includes(' '))) {
+        showToast("Guests must provide a First Name and Last Initial.", "error"); return;
       }
 
-      const exactMatch = globalDictionary.find(item => item.code === code);
-      if(!exactMatch) {
-        const closeMatch = globalDictionary.find(item => item.code.startsWith(code) || item.code.includes(code));
-        if (closeMatch) {
-          alert(`Error code "${code}" not found. Did you mean ${closeMatch.code}? Please select a valid code from the suggestions.`);
-        } else {
-          alert(`Invalid error code "${code}". Please select a valid code from the dictionary.`);
-        }
-        return;
+      if(!globalDictionary.find(i => i.code === code)) {
+        showToast("Invalid error code. Please select a valid code from suggestions.", "error"); return;
       }
       
-      const solution = cleanProfanity(rawSolution);
-      let author = currentUser.isGuest ? authorField : (currentUser.displayName || "Agent");
+      btn.disabled = true;
+      btn.innerHTML = `<div class="spinner"></div> <span class="ml-2">Submitting...</span>`;
 
       try {
         await db.collection("workarounds").add({
           code: code,
-          solution: solution,
-          author: author,
+          solution: cleanProfanity(document.getElementById('fixSolution').value.trim()),
+          author: currentUser.isGuest ? author : currentUser.displayName,
+          upvotes: 0,
+          upvotedBy: [],
+          comments: [],
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         e.target.reset();
-        alert(`Success! Workaround for ${code} added to the community.`);
+        showToast(`Workaround for ${code} shared globally!`);
       } catch (error) {
-        console.error(error);
-        alert("Failed to submit workaround. Ensure Firebase rules allow guest writes.");
+        showToast("Failed to submit workaround.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = "Submit to Network";
       }
     }
 
-    function listenForCommunityNotes() {
-      db.collection("workarounds").orderBy("timestamp", "desc").limit(25).onSnapshot((querySnapshot) => {
-        const feed = document.getElementById('communityFeed');
-        if(querySnapshot.empty) {
-          feed.innerHTML = '<p class="text-slate-500 text-sm italic">No workarounds submitted yet.</p>';
-          return;
-        }
-        let notesHTML = '';
-        querySnapshot.forEach((doc) => {
-          const note = doc.data();
-          let timeString = note.timestamp ? note.timestamp.toDate().toLocaleDateString() : "Recently";
-          
-          let adminDeleteBtn = isAdmin ? `<button onclick="deleteWorkaround('${doc.id}');" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xs font-bold transition">Delete</button>` : '';
+    // Auto-suggest logic
+    function suggestCodes() {
+      const input = document.getElementById('fixCode').value.trim().toUpperCase();
+      const box = document.getElementById('codeSuggestions');
+      if(input.length < 2) { box.classList.add('hidden'); return; }
+      
+      const matches = globalDictionary.filter(e => e.code.includes(input)).slice(0, 5);
+      if(matches.length > 0) {
+        box.innerHTML = matches.map(m => `
+          <div class="p-3 hover:bg-blue-50 dark:hover:bg-slate-600 cursor-pointer text-sm font-semibold border-b border-slate-100 dark:border-slate-600" onclick="document.getElementById('fixCode').value='${m.code}'; document.getElementById('codeSuggestions').classList.add('hidden');">
+            ${m.code} <span class="text-slate-400 font-normal ml-2 truncate inline-block max-w-[200px] align-bottom">${m.description}</span>
+          </div>`).join('');
+        box.classList.remove('hidden');
+      } else { box.classList.add('hidden'); }
+    }
+    document.addEventListener('click', e => { if(document.getElementById('fixCode') !== e.target) document.getElementById('codeSuggestions').classList.add('hidden'); });
 
-          notesHTML += `
-            <div class="relative p-4 bg-slate-50 dark:bg-slate-700 rounded border border-slate-200 dark:border-slate-600 mb-4 shadow-sm pr-12">
-              ${adminDeleteBtn}
-              <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded font-bold mb-2 cursor-pointer hover:underline" onclick="openDetails('${note.code}')">${note.code}</span>
-              <p class="text-sm text-slate-700 dark:text-slate-200 mb-2">"${note.solution}"</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">- Shared by ${note.author} • ${timeString}</p>
-            </div>
-          `;
+    // --- ADMIN LOGIC ---
+    function openAdminModal(code='', desc='', path='') {
+      document.getElementById('adminCode').value = code;
+      document.getElementById('adminCode').disabled = !!code; 
+      document.getElementById('adminDesc').value = desc;
+      document.getElementById('adminPath').value = path;
+      document.getElementById('adminModalTitle').innerText = code ? 'Edit Path' : 'Add Code';
+      document.getElementById('adminModal').classList.remove('hidden');
+    }
+    function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+    
+    async function saveAdminCode(e) {
+      e.preventDefault();
+      try {
+        await db.collection("errors").doc(document.getElementById('adminCode').value.trim().toUpperCase()).set({
+          code: document.getElementById('adminCode').value.trim().toUpperCase(),
+          description: document.getElementById('adminDesc').value.trim(),
+          escalationPath: document.getElementById('adminPath').value.trim()
         });
-        feed.innerHTML = notesHTML;
-      });
+        closeAdminModal(); loadDictionaryFromCloud(); showToast("Saved to Dictionary.");
+      } catch(err) { showToast("Failed to save.", "error"); }
+    }
+    async function deleteError(code) {
+      if(confirm(`Delete ${code} from dictionary?`)) {
+        await db.collection("errors").doc(code).delete(); loadDictionaryFromCloud(); showToast("Deleted.");
+      }
+    }
+    async function deleteWorkaround(id) {
+      if(confirm('Delete community workaround?')) { await db.collection("workarounds").doc(id).delete(); showToast("Deleted."); }
     }
 
-    // --- TAB SWITCHING ---
     function switchTab(tab) {
-      const allTabs = ['hub', 'links', 'community'];
-      document.getElementById('view-details').classList.add('hidden'); 
-      
-      allTabs.forEach(t => {
-        const view = document.getElementById(`view-${t}`);
-        const btn = document.getElementById(`tab-${t}`);
-        if (t === tab) {
-          view.classList.remove('hidden');
-          btn.className = "px-6 py-2 bg-blue-600 text-white font-semibold rounded-full transition shadow";
-        } else {
-          view.classList.add('hidden');
-          btn.className = "px-6 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 font-semibold rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition shadow-sm";
-        }
+      ['hub', 'links', 'community'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tab-${t}`).className = t === tab ? "px-6 py-2 bg-blue-600 text-white font-semibold rounded-full transition shadow" : "px-6 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 font-semibold rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition shadow-sm";
       });
+      document.getElementById('view-details').classList.add('hidden');
+      if(currentDetailsUnsubscribe && tab !== 'none') { currentDetailsUnsubscribe(); currentDetailsUnsubscribe = null; }
     }
   </script>
 </body>
