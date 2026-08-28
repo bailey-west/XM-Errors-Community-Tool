@@ -19,11 +19,21 @@
   <div id="loginOverlay" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center transition-opacity duration-300">
     <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full text-center">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Project Prototype</h2>
-      <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Authenticate to access the hub.</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Authenticate or proceed as guest.</p>
       
-      <button onclick="signInWithGoogle()" class="w-full bg-blue-600 text-white px-4 py-3 rounded font-semibold hover:bg-blue-700 transition shadow flex items-center justify-center">
+      <button onclick="signInWithGoogle()" class="w-full bg-blue-600 text-white px-4 py-3 rounded font-semibold hover:bg-blue-700 transition shadow flex items-center justify-center mb-3">
         <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44-3.95 0-7.14-3.19-7.14-7.14s3.19-7.14 7.14-7.14c1.83 0 3.44.66 4.67 1.76l2.13-2.13C17.18 2.92 14.75 1.77 12 1.77 6.36 1.77 1.77 6.36 1.77 12s4.59 10.23 10.23 10.23c5.44 0 9.77-3.83 9.77-10.23 0-.66-.08-1.23-.23-1.8z"/></svg>
-        Sign in with Google
+        Sign in with Google (Admin)
+      </button>
+      
+      <div class="relative flex py-2 items-center">
+        <div class="flex-grow border-t border-slate-300 dark:border-slate-600"></div>
+        <span class="flex-shrink-0 mx-4 text-slate-400 text-sm">or</span>
+        <div class="flex-grow border-t border-slate-300 dark:border-slate-600"></div>
+      </div>
+      
+      <button onclick="continueAsGuest()" class="w-full bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white px-4 py-3 rounded font-semibold hover:bg-slate-300 dark:hover:bg-slate-600 transition shadow mt-1">
+        Continue as Guest
       </button>
     </div>
   </div>
@@ -59,10 +69,9 @@
               <svg class="w-5 h-5 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
               Admin Control Panel
             </h3>
-            <p class="text-sm text-slate-300">You have active read/write dictionary privileges.</p>
+            <p class="text-sm text-slate-300">You have active read/write privileges for the Dictionary and Workarounds.</p>
           </div>
           <div class="flex space-x-3">
-            <button onclick="restoreDefaultDictionary()" class="bg-amber-600 px-4 py-2 rounded font-bold hover:bg-amber-700 transition shadow-sm text-sm">Restore Default Dictionary</button>
             <button onclick="openAdminModal()" class="bg-green-600 px-4 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm text-sm">+ Add New Code</button>
           </div>
         </div>
@@ -117,41 +126,41 @@
 
       <div id="view-links" class="hidden max-w-4xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Company Mobile Home</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Public-facing mobile storefront.</p>
+          <a href="https://www.xfinity.com/mobile/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Xfinity Mobile Home</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Public-facing Xfinity Mobile storefront and plan info.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+          <a href="https://xm360.xfinity.com/LookupIMEI" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
             <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">BYOD IMEI Lookup</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Direct link to system to verify Bring Your Own Device eligibility.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Direct link to XM360 to verify Bring Your Own Device eligibility.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Savings Calculator</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Tool to show customers how much they will save switching.</p>
+          <a href="https://www.xfinity.com/learn/mobile/plan/savings-calculator/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">XM Savings Calculator</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Tool to show customers how much they will save switching to XM.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Deals (Internal KB)</h3>
+          <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=240319165608377" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Mobile Deals (Celestial)</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article for current mobile promotions.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+          <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=200826155424716" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
             <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Device Activation Help</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article for activation troubleshooting.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+          <a href="https://celestial.cable.comcast.com/knowledge/article-info/?query=241125144759307" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
             <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Device Trade-in List</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Internal knowledge base article detailing eligible trade-in models and values.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Enterprise Ticketing Support</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ticketing hub for submitting Tier 2 support escalations.</p>
+          <a href="https://ecm.comcast.com/ecm?id=ecm_taxonomy_topic&topic_id=fd2fd5178713c1105e69ec2e0ebb358e" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">ECM XM Support</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Enterprise Case Management hub for submitting Tier 2 support tickets.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Porting Tool</h3>
+          <a href="https://fetchitup.comcast.com/#/cpi/" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Fetchitup</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Porting information and customer profile tool.</p>
           </a>
-          <a href="#" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">Network Management Tool</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Network Toolkit for advanced support.</p>
+          <a href="https://xmtool.cable.comcast.com/xmnmtoolkit" target="_blank" class="block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
+            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">XM Network Tool</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Network Management Toolkit for advanced support.</p>
           </a>
         </div>
       </div>
@@ -171,13 +180,20 @@
             <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Contribute a Fix</h2>
             <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Found a reliable bypass? Share it.</p>
             <form onsubmit="submitFix(event)" class="space-y-4">
-              <div>
+              
+              <div class="relative">
                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Error Code</label>
-                <input type="text" id="fixCode" placeholder="e.g., MBC-7305" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" required>
+                <input type="text" id="fixCode" oninput="suggestCodes()" autocomplete="off" placeholder="e.g., MBC-7305" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" required>
+                <div id="codeSuggestions" class="absolute z-10 w-full bg-white dark:bg-slate-700 shadow-lg border border-slate-200 dark:border-slate-600 max-h-40 overflow-y-auto hidden mt-1 rounded"></div>
               </div>
+
               <div>
                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Solution</label>
                 <textarea rows="4" id="fixSolution" placeholder="Step-by-step bypass..." class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+              </div>
+              <div id="guestNameField" class="hidden">
+                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Name (First & Last Initial) <span class="text-red-500">*</span></label>
+                <input type="text" id="fixAuthor" placeholder="e.g., John D." class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
               </div>
               <button type="submit" class="w-full bg-green-600 text-white px-4 py-3 rounded font-bold hover:bg-green-700 transition shadow">Submit to Network</button>
             </form>
@@ -200,7 +216,7 @@
           <input type="text" id="adminDesc" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring-2 focus:ring-blue-500" required>
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Escalation Path / Agent Action</label>
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Escalation Path</label>
           <textarea rows="4" id="adminPath" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring-2 focus:ring-blue-500" required></textarea>
         </div>
         <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200 dark:border-slate-700">
@@ -245,9 +261,13 @@
 
       auth.onAuthStateChanged((user) => {
         if (user) {
-          currentUser = user;
+          currentUser = {
+            isGuest: false,
+            displayName: user.displayName || user.email.split('@')[0],
+            email: user.email
+          };
           isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
-          document.getElementById('userDisplayName').innerText = user.displayName || user.email;
+          document.getElementById('userDisplayName').innerText = currentUser.displayName;
           document.getElementById('loginOverlay').classList.add('hidden');
           document.getElementById('mainApp').classList.remove('hidden');
           
@@ -255,12 +275,17 @@
             document.getElementById('adminControls').classList.remove('hidden');
             document.getElementById('adminControls').classList.add('flex');
           }
+          document.getElementById('guestNameField').classList.add('hidden');
+          document.getElementById('fixAuthor').required = false;
 
           loadDictionaryFromCloud();
           listenForCommunityNotes();
         } else {
-          document.getElementById('loginOverlay').classList.remove('hidden');
-          document.getElementById('mainApp').classList.add('hidden');
+          // If not authenticated, ensure login overlay is visible unless they click "Continue as Guest"
+          if (!currentUser || !currentUser.isGuest) {
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+          }
         }
       });
     }
@@ -273,9 +298,30 @@
       });
     }
 
+    function continueAsGuest() {
+      currentUser = { isGuest: true, displayName: "Guest User" };
+      isAdmin = false;
+      
+      document.getElementById('userDisplayName').innerText = "Guest User";
+      document.getElementById('loginOverlay').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      document.getElementById('adminControls').classList.add('hidden');
+      document.getElementById('adminControls').classList.remove('flex');
+      
+      // Require Name input for guest submissions
+      document.getElementById('guestNameField').classList.remove('hidden');
+      document.getElementById('fixAuthor').required = true;
+
+      loadDictionaryFromCloud();
+      listenForCommunityNotes();
+    }
+
     function signOut() {
-      auth.signOut();
-      window.location.reload();
+      auth.signOut().then(() => {
+        currentUser = null;
+        isAdmin = false;
+        window.location.reload();
+      });
     }
 
     function toggleDarkMode() {
@@ -297,7 +343,7 @@
       try {
         const snapshot = await db.collection("errors").orderBy("code").get();
         if (snapshot.empty) {
-          tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center italic text-slate-500">Database is empty. Use the Admin Control Panel to restore defaults or add codes.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center italic text-slate-500">Database is empty. Add codes via the Admin panel.</td></tr>';
           return;
         }
 
@@ -362,8 +408,12 @@
           snapshot.forEach((doc) => {
             const note = doc.data();
             let timeString = note.timestamp ? note.timestamp.toDate().toLocaleDateString() : "Recently";
+            
+            let adminDeleteBtn = isAdmin ? `<button onclick="deleteWorkaround('${doc.id}'); event.stopPropagation();" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xs font-bold transition">Delete</button>` : '';
+
             notesHTML += `
-              <div class="bg-indigo-50 dark:bg-slate-700 p-4 rounded text-sm border border-indigo-100 dark:border-slate-600 mb-3 shadow-sm">
+              <div class="relative bg-indigo-50 dark:bg-slate-700 p-4 rounded text-sm border border-indigo-100 dark:border-slate-600 mb-3 shadow-sm pr-12">
+                ${adminDeleteBtn}
                 <p class="font-bold text-indigo-900 dark:text-indigo-300">${note.author} <span class="text-indigo-500 dark:text-indigo-400 font-normal ml-2 text-xs">${timeString}</span></p>
                 <p class="text-slate-800 dark:text-slate-200 mt-2">${note.solution}</p>
               </div>
@@ -373,7 +423,7 @@
         })
         .catch(err => {
           console.error(err);
-          notesContainer.innerHTML = '<p class="text-red-500 text-xs mt-2">Database query failed (Check index requirements in console).</p>';
+          notesContainer.innerHTML = '<p class="text-red-500 text-xs mt-2">Database query failed. Ensure indices are built and rules allow reading.</p>';
         });
     }
 
@@ -428,118 +478,94 @@
       }
     }
 
-    async function restoreDefaultDictionary() {
+    async function deleteWorkaround(docId) {
       if(!isAdmin) return;
-      if(!confirm("This will upload all original default codes to your database. Proceed?")) return;
-
-      const defaultDatabase = {
-        "BYO-700": { description: "Device is tied to a pre-activated line.", action: "Check for the pending order in the Account History page of XM360. If you can’t resolve the pending order, escalate using the steps listed above." },
-        "BYO-1000": { description: "Device is not eligible.", action: "Research where the device came from to confirm whether it is an eligible Xfinity device. If it is, follow the standard escalation steps." },
-        "BYO-1100": { description: "Device unlock policy is unknown.", action: "Bypass the error. If the bypass option is not available, then escalate." },
-        "BYO-1900": { description: "Android unlock status unknown.", action: "Follow standard escalation steps." },
-        "BYO-2000": { description: "Device lock status unknown. The system was unable to verify the unlock status at the time.", action: "Refer to the Old Service Provider (OSP) to confirm if the device is unlocked. Note: You can enter the order, but the action will fail if the device isn't unlocked before activation." },
-        "BYO-2100": { description: "Device operating system (OS) version unknown.", action: "Tell the customer to update their device to the latest OS version." },
-        "BYO-2500": { description: "eSIM compatibility not confirmed.", action: "Check the device in the Xfinity Mobile Ops Tool to confirm the EID is populated. If not, open a TechSpot ticket to escalate." },
-        "EC0": { description: "Generic error; reason not known.", action: "Follow standard escalation steps." },
-        "EC200": { description: "Xfinity Mobile requires a residential account.", action: "Xfinity Mobile is only available to residential internet customers. Ask the customer if they want help setting up Xfinity Internet." },
-        "EC300": { description: "Your order cannot be processed. An Xfinity Internet subscription is required to add lines.", action: "Xfinity Mobile requires a subscription to Xfinity Internet. Ask the customer if they want help setting up Xfinity Internet and transfer them using OneCTI." },
-        "EC400": { description: "Xfinity Mobile requires an Xfinity Internet account.", action: "Ask the customer if they want help setting up internet services and transfer them using OneCTI." },
-        "EC500": { description: "You must be the primary account holder to continue.", action: "Tell the customer only the primary account holder can set up Xfinity Mobile service." },
-        "EC600": { description: "Bill past due.", action: "Ask the customer if they want to make a payment." },
-        "EC800": { description: "Xfinity Mobile requires an active account status.", action: "Work with the customer to identify why the account is inactive." },
-        "EC900": { description: "You must have billing permissions to continue.", action: "Tell the customer only the primary account holder can set up Xfinity Mobile service." },
-        "EC1000": { description: "It looks like your account is not on our Xfinity Mobile eligibility list.", action: "Explain that Xfinity Mobile is only available to Xfinity Internet customers, and let the customer know that we'll keep them posted as we continue to expand our services." },
-        "EC1100": { description: "You need an Xfinity Internet account in order to continue.", action: "Xfinity Mobile service is only available to Xfinity Internet customers. Transfer using OneCTI to add internet." },
-        "EC1300": { description: "Only non-employee.", action: "Explain to the customer they have no Xfinity services with us. To add Xfinity Mobile, they need Xfinity Internet." },
-        "EC1400": { description: "Bulk account with no existing monthly recurring charge (MRC) with Comcast.", action: "Explain to the customer they have Xfinity Internet through a bulk account. To add Xfinity Mobile lines, they'll need a direct subscription." },
-        "EC1500": { description: "Customer has prepaid services.", action: "Explain that a postpaid account is required to access Xfinity Mobile services." },
-        "EC1600": { description: "Need a line of business (LOB) with Comcast with a pending Xfinity Internet installation.", action: "Tell the customer they have an installation date coming up, but they need active Xfinity services to continue." },
-        "EC1900": { description: "The customer’s Xfinity ID has been or is suspected of being compromised.", action: "The account’s primary user ID or secondary user ID is disabled. To proceed, the customer needs to reset their password." },
-        "EC2100": { description: "The customer has a past due Xfinity Mobile balance.", action: "Ask the customer if they want to make a payment." },
-        "EC2200": { description: "Non-Pay ceased.", action: "Check the account status, escalate if everything looks correct." },
-        "EC4100": { description: "Customer is ineligible to purchase.", action: "Xfinity Mobile service is only available to Xfinity Internet customers. Transfer using OneCTI." },
-        "EC4200": { description: "Cable missed payments.", action: "There was a missed payment on the customer’s account. Help them resolve any outstanding balance." },
-        "EC4400": { description: "No eligible disconnect period.", action: "Confirm there’s no pending orders associated with the line. Verify the line is still active on the account and network. Escalate BAU if unresolved." },
-        "EC5000": { description: "Customer is ineligible to purchase.", action: "This error usually displays with an MBC error that explains the issue. Open a TechSpot ticket." },
-        "EC5100": { description: "Active NOW Internet customer.", action: "Cannot add to Xfinity Mobile while the customer has NOW Internet. The customer can sign up for Xfinity Internet first, or can enroll in NOW Mobile instead. Internet type must be Postpaid." },
-        "UPEL-100": { description: "Device not found in inventory.", action: "Confirm the IMEI and ICCID of the device the customer wants to NDEL." },
-        "UPEL-200": { description: "Unsupported device SKU.", action: "Confirm the IMEI and ICCID of the device the customer wants to NDEL." },
-        "UPEL-300": { description: "Line is not on a payment plan.", action: "This device does not have a device payment plan (DPP). The customer has to buy the new device as an NDEL." },
-        "MBC-1002": { description: "Error while Invoking Payment Service-SubmitPayment.", action: "There is an issue with the customer’s card. Try a different card or ask them to contact their bank." },
-        "MBC-1003": { description: "Error while invoking Payment Service-AuthorizePayment.", action: "Request a different card or other form of payment. The credit card has reached the limit." },
-        "MBC-1522": { description: "Not Authorized", action: "The agent’s profile isn’t allowed to make this change. Escalate to a supervisor." },
-        "MBC-2002": { description: "Error retrieving authorization token.", action: "Xfinity Mobile has a transaction maximum of $5,000. Ask the customer to remove an item if you get this error." },
-        "MBC-2026": { description: "Error invoking CreateSubmitConfiguration.", action: "Pending order was already submitted and needs to be completed before a new order can be created." },
-        "MBC-2030": { description: "This line isn’t active with an MDN.", action: "The line must be activated with the phone number before any changes." },
-        "MBC-3005": { description: "Error updating notification preferences.", action: "Confirm the customer’s email address. Make sure it doesn’t include special characters." },
-        "MBC-4002": { description: "The promo code you entered has expired.", action: "Please enter the correct promo code." },
-        "MBC-5029": { description: "Error retrieving simled information by ICCID.", action: "SIM Card information is incorrect and does not belong to Xfinity. Enter correct ICCID." },
-        "MBC-7009": { description: "You entered an invalid SSN or DOB.", action: "Please exit and enter the correct SSN and DOB." },
-        "MBC-7020": { description: "Shipping address is required to process order.", action: "Please update the request and retry." },
-        "MBC-7032": { description: "A Payment Plan is required for submitting the order.", action: "Go into the cart and select the Payment Plan again. If the issue keeps happening, exit and start over." },
-        "MBC-7050": { description: "Request Body Parameters are invalid. Special characters are not allowed.", action: "Verify and remove special characters or spaces before or after the entry, then resubmit." },
-        "MBC-7066": { description: "The nickname cannot be added, since there is an existing line with the same nickname.", action: "Add a new nickname to continue." },
-        "MBC-7067": { description: "Phone number selection and carrier entry is not allowed when you are not porting.", action: "Restart the order and select an Xfinity generated number from the beginning." },
-        "MBC-7072": { description: "Porting Eligibility Check failed for the entered telephone number.", action: "We can't port the number. Try another MDN or select an Xfinity number." },
-        "MBC-7092": { description: "Legal Age Verification has not been completed.", action: "Authorization wasn’t captured. Restart and re-enter the DOB/SSN." },
-        "MBC-7104": { description: "The item you are looking for is not available.", action: "Select a different device or try again later." },
-        "MBC-7112": { description: "Device is not eligible for bring your own device (BYOD).", action: "The device isn't eligible for BYOD." },
-        "MBC-7113": { description: "SIM Card is invalid.", action: "Re-enter the full 20-digit SIM card number and try again." },
-        "MBC-7118": { description: "Cannot add any more lines since the preorder cap has been reached.", action: "The customer can only preorder one device per order. Finish the first, then start a new order." },
-        "MBC-7227": { description: "Cannot add any more lines since the backorder cap has been reached.", action: "The customer can’t have multiple backorders. Wait until the device is available." },
-        "MBC-7292": { description: "Device with the same phone number is already added to the cart.", action: "A device with the same phone number is already in the cart. Select a different phone number." },
-        "MBC-7300": { description: "Customer is ineligible.", action: "The customer is ineligible for a sale. See Troubleshooting customer eligibility errors in XM360." },
-        "MBC-7305": { description: "For IN_STORE flow imei should be a part of the device.", action: "Check the IMEI to ensure it was scanned properly or entered correctly, then proceed." },
-        "MBC-7308": { description: "Couldn’t retrieve credit information. Please retry.", action: "Customer may have a lock on their file. Possible outage with Experian." },
-        "MBC-7311": { description: "Entered amount is above maximum allowed amount.", action: "Customers can only perform a transaction valued at less than $5,000." },
-        "MBC-7312": { description: "Card used for the transaction has insufficient funds.", action: "Have the customer try a different card or contact their bank." },
-        "MBC-7372": { description: "Auth ID not validated.", action: "Accessory-only purchase was selected as the reason for ID Auth, but a device was added. Restart sale." },
-        "MBC-7383": { description: "The item cannot be added to the cart with the simType present.", action: "Correct the simType before proceeding." },
-        "MBC-7420": { description: "A trade-in promotion is not applied to the item in the Cart.", action: "Remove the trade-in device or pick a trade-in device and plan that works for the promotion." },
-        "MBC-8032": { description: "Fraud check failed.", action: "Verify the customer’s credit agency account isn’t locked or frozen. If not, then escalate." },
-        "MSPAGENT-404": { description: "Server could not find what was requested.", action: "Refresh the page or wait a few minutes and try again." },
-        "MSPAGENT-500": { description: "API failure error", action: "Exit the session and retry. If the issue persists, then escalate." },
-        "MSPAGENT-502": { description: "Bad gateway.", action: "Try using a different browser, clearing cache, using developer tools, or close the error and try again." },
-        "NDEL-100": { description: "Line status is ineligible.", action: "Advise the customer the line isn’t eligible for an early upgrade/NDEL." },
-        "NDEL-200": { description: "Line status is ineligible.", action: "Lines with a pending return (RMA) can’t be processed as an NDEL order." },
-        "NDEL-800": { description: "Device has open claims.", action: "This device has an open claim with Assurant." },
-        "CYB-201": { description: "The issuing bank has questions about the request.", action: "You won’t get an authorization code automatically, but you might get one if you call the processor." },
-        "CYB-202": { description: "The card is expired.", action: "Use a different form of payment." }
-      };
-
-      try {
-        const batch = db.batch();
-        Object.keys(defaultDatabase).forEach(code => {
-          const docRef = db.collection("errors").doc(code);
-          batch.set(docRef, {
-            code: code,
-            description: defaultDatabase[code].description,
-            escalationPath: defaultDatabase[code].action
-          });
-        });
-        await batch.commit();
-        alert("Default dictionary restored successfully!");
-        loadDictionaryFromCloud();
-      } catch (err) {
-        console.error(err);
-        alert("Failed to restore default dictionary.");
+      if(confirm(`Are you sure you want to delete this community workaround?`)) {
+        try {
+          await db.collection("workarounds").doc(docId).delete();
+          // To refresh the view, we just re-trigger the openDetails if we are in that view
+          const currentCode = document.getElementById('detailTitle').innerText;
+          if(currentCode) openDetails(currentCode);
+        } catch(err) {
+          console.error(err);
+          alert("Failed to delete workaround.");
+        }
       }
     }
 
-    // --- 6. PROFANITY FILTER & COMMUNITY SUBMISSIONS ---
+    // --- 6. PROFANITY FILTER, SUGGESTIONS & COMMUNITY SUBMISSIONS ---
+    
+    // Robust Profanity Filter
     function cleanProfanity(text) {
-      const badWords = ['fuck', 'shit', 'bitch', 'asshole', 'crap', 'damn', 'cunt', 'dick'];
+      const badWords = ['fuck', 'fucking', 'shit', 'bitch', 'asshole', 'crap', 'damn', 'cunt', 'dick', 'piss', 'bastard', 'slut', 'douche'];
       const regex = new RegExp(`\\b(${badWords.join('|')})\\b`, 'gi');
       return text.replace(regex, '***');
     }
+
+    // "Did you mean" Auto-suggest logic
+    function suggestCodes() {
+      const input = document.getElementById('fixCode').value.trim().toUpperCase();
+      const suggBox = document.getElementById('codeSuggestions');
+      
+      if(input.length < 2) { 
+        suggBox.classList.add('hidden'); 
+        return; 
+      }
+      
+      const matches = globalDictionary.filter(e => e.code.includes(input)).slice(0, 5);
+      
+      if(matches.length > 0) {
+        suggBox.innerHTML = matches.map(m => `
+          <div class="p-3 hover:bg-blue-50 dark:hover:bg-slate-600 cursor-pointer text-sm font-semibold border-b border-slate-100 dark:border-slate-600 last:border-0" 
+               onclick="selectSuggestion('${m.code}')">
+            ${m.code} <span class="text-slate-400 font-normal ml-2 truncate inline-block max-w-[200px] align-bottom">${m.description}</span>
+          </div>`).join('');
+        suggBox.classList.remove('hidden');
+      } else {
+        suggBox.classList.add('hidden');
+      }
+    }
+
+    function selectSuggestion(code) {
+      document.getElementById('fixCode').value = code;
+      document.getElementById('codeSuggestions').classList.add('hidden');
+    }
+
+    // Close suggestions if clicking outside
+    document.addEventListener('click', function(e) {
+      if(document.getElementById('fixCode') !== e.target) {
+        document.getElementById('codeSuggestions').classList.add('hidden');
+      }
+    });
 
     async function submitFix(e) {
       e.preventDefault();
       const code = document.getElementById('fixCode').value.trim().toUpperCase();
       const rawSolution = document.getElementById('fixSolution').value.trim();
+      let authorField = document.getElementById('fixAuthor').value.trim();
+      
+      // Guest Name Validation
+      if (currentUser.isGuest) {
+        if (!authorField || !authorField.includes(' ')) {
+          alert("Guests must provide a First Name and Last Initial (e.g., 'John D.').");
+          return;
+        }
+      }
+
+      // "Did you mean?" Code Validation
+      const exactMatch = globalDictionary.find(item => item.code === code);
+      if(!exactMatch) {
+        const closeMatch = globalDictionary.find(item => item.code.startsWith(code) || item.code.includes(code));
+        if (closeMatch) {
+          alert(`Error code "${code}" not found. Did you mean ${closeMatch.code}? Please select a valid code from the suggestions.`);
+        } else {
+          alert(`Invalid error code "${code}". Please select a valid code from the dictionary.`);
+        }
+        return;
+      }
       
       const solution = cleanProfanity(rawSolution);
-      let author = currentUser.displayName || currentUser.email.split('@')[0];
+      let author = currentUser.isGuest ? authorField : (currentUser.displayName || "Agent");
 
       try {
         await db.collection("workarounds").add({
@@ -549,10 +575,10 @@
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         e.target.reset();
-        alert(`Success! Workaround for ${code} added.`);
+        alert(`Success! Workaround for ${code} added to the community.`);
       } catch (error) {
         console.error(error);
-        alert("Failed to submit.");
+        alert("Failed to submit workaround. Ensure Firebase rules allow guest writes.");
       }
     }
 
@@ -567,8 +593,12 @@
         querySnapshot.forEach((doc) => {
           const note = doc.data();
           let timeString = note.timestamp ? note.timestamp.toDate().toLocaleDateString() : "Recently";
+          
+          let adminDeleteBtn = isAdmin ? `<button onclick="deleteWorkaround('${doc.id}');" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xs font-bold transition">Delete</button>` : '';
+
           notesHTML += `
-            <div class="p-4 bg-slate-50 dark:bg-slate-700 rounded border border-slate-200 dark:border-slate-600 mb-4 shadow-sm">
+            <div class="relative p-4 bg-slate-50 dark:bg-slate-700 rounded border border-slate-200 dark:border-slate-600 mb-4 shadow-sm pr-12">
+              ${adminDeleteBtn}
               <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded font-bold mb-2 cursor-pointer hover:underline" onclick="openDetails('${note.code}')">${note.code}</span>
               <p class="text-sm text-slate-700 dark:text-slate-200 mb-2">"${note.solution}"</p>
               <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">- Shared by ${note.author} • ${timeString}</p>
