@@ -159,7 +159,6 @@
             <p class="text-sm text-slate-300">Manage global helpful links.</p>
           </div>
           <div class="flex space-x-3">
-            <button onclick="restoreDefaultLinks()" class="bg-amber-600 px-4 py-2 rounded font-bold hover:bg-amber-700 transition shadow-sm text-sm">Restore Defaults</button>
             <button onclick="openLinkAdminModal()" class="bg-green-600 px-4 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm text-sm">+ Add New Link</button>
           </div>
         </div>
@@ -283,7 +282,6 @@
     let isAdmin = false;
     let currentDetailsUnsubscribe = null; 
 
-    // Generate unique guest ID to track upvotes without logging in
     let localUserId = localStorage.getItem('localUserId');
     if(!localUserId) {
       localUserId = 'guest_' + Math.random().toString(36).substr(2, 9);
@@ -385,15 +383,30 @@
 
     function renderDictionaryTable(dataList) {
       const tbody = document.getElementById('dictionaryBody');
-      tbody.innerHTML = dataList.map(data => `
+      tbody.innerHTML = dataList.map(data => {
+        const adminActions = isAdmin ? `
+          <div class="flex justify-end gap-2 pr-2">
+            <button onclick="openAdminModal('${data.code}', \`${data.description.replace(/"/g, '&quot;')}\`, \`${data.escalationPath.replace(/"/g, '&quot;')}\`); event.stopPropagation();" class="text-slate-400 hover:text-blue-500 transition" title="Edit">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            </button>
+            <button onclick="deleteError('${data.code}'); event.stopPropagation();" class="text-slate-400 hover:text-red-500 transition" title="Delete">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+          </div>
+        ` : '';
+
+        return `
         <tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer" onclick="openDetails('${data.code}')">
           <td class="p-4 font-bold text-blue-600 dark:text-blue-400">${data.code}</td>
           <td class="p-4">${data.description}</td>
-          <td class="p-4 text-right">
-            ${isAdmin ? `<button onclick="openAdminModal('${data.code}', \`${data.description.replace(/"/g, '&quot;')}\`, \`${data.escalationPath.replace(/"/g, '&quot;')}\`); event.stopPropagation();" class="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 mr-2">Edit</button><button onclick="deleteError('${data.code}'); event.stopPropagation();" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">Del</button>` : ''}
-            <span class="text-xs text-slate-400 ml-2 inline-block">View &rarr;</span>
+          <td class="p-4 align-middle">
+            <div class="flex items-center justify-end">
+              ${adminActions}
+              <span class="text-xs text-slate-400 ml-2 inline-block">View &rarr;</span>
+            </div>
           </td>
-        </tr>`).join('') || `<tr><td colspan="3" class="p-8 text-center italic text-slate-500">No results found.</td></tr>`;
+        </tr>`;
+      }).join('') || `<tr><td colspan="3" class="p-8 text-center italic text-slate-500">No results found.</td></tr>`;
     }
 
     function filterDictionary() {
@@ -420,11 +433,17 @@
       }
       
       container.innerHTML = globalLinks.map(link => `
-        <div class="relative block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition">
-          ${isAdmin ? `<div class="absolute top-2 right-2 flex gap-2">
-            <button onclick="openLinkAdminModal('${link.id}')" class="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 z-10">Edit</button>
-            <button onclick="deleteLink('${link.id}')" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 z-10">Del</button>
-          </div>` : ''}
+        <div class="relative block p-5 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition group">
+          ${isAdmin ? `
+            <div class="absolute top-3 right-3 flex gap-3 opacity-50 group-hover:opacity-100 transition">
+              <button onclick="openLinkAdminModal('${link.id}')" class="text-slate-400 hover:text-blue-500 transition" title="Edit">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+              </button>
+              <button onclick="deleteLink('${link.id}')" class="text-slate-400 hover:text-red-500 transition" title="Delete">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              </button>
+            </div>
+          ` : ''}
           <a href="${link.url}" target="_blank" class="block h-full">
             <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400 pr-16">${link.title}</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${link.description}</p>
@@ -474,33 +493,6 @@
       }
     }
 
-    async function restoreDefaultLinks() {
-      if(!isAdmin) return;
-      if(!confirm("This will upload all original default links to your database. Proceed?")) return;
-
-      const defaultLinks = [
-        { id: "link_1", title: "Xfinity Mobile Home", url: "https://www.xfinity.com/mobile/", desc: "Public-facing Xfinity Mobile storefront and plan info." },
-        { id: "link_2", title: "BYOD IMEI Lookup", url: "https://xm360.xfinity.com/LookupIMEI", desc: "Direct link to XM360 to verify Bring Your Own Device eligibility." },
-        { id: "link_3", title: "Mobile Savings Calculator", url: "https://www.xfinity.com/learn/mobile/plan/savings-calculator/", desc: "Tool to show customers how much they will save switching." },
-        { id: "link_4", title: "Mobile Deals (Internal KB)", url: "https://celestial.cable.comcast.com/knowledge/article-info/?query=240319165608377", desc: "Internal knowledge base article for current mobile promotions." },
-        { id: "link_5", title: "Device Activation Help", url: "https://celestial.cable.comcast.com/knowledge/article-info/?query=200826155424716", desc: "Internal knowledge base article for activation troubleshooting." },
-        { id: "link_6", title: "Device Trade-in List", url: "https://celestial.cable.comcast.com/knowledge/article-info/?query=241125144759307", desc: "Internal knowledge base article detailing eligible trade-in models and values." },
-        { id: "link_7", title: "Enterprise Ticketing Support", url: "https://ecm.comcast.com/ecm?id=ecm_taxonomy_topic&topic_id=fd2fd5178713c1105e69ec2e0ebb358e", desc: "Ticketing hub for submitting Tier 2 support escalations." },
-        { id: "link_8", title: "Porting Tool", url: "https://fetchitup.comcast.com/#/cpi/", desc: "Porting information and customer profile tool." },
-        { id: "link_9", title: "Network Management Tool", url: "https://xmtool.cable.comcast.com/xmnmtoolkit", desc: "Network Toolkit for advanced support." }
-      ];
-
-      try {
-        const batch = db.batch();
-        defaultLinks.forEach(link => {
-          batch.set(db.collection("links").doc(link.id), link);
-        });
-        await batch.commit();
-        showToast("Default links restored!");
-        loadLinksFromCloud();
-      } catch (err) { showToast("Failed to restore default links.", "error"); }
-    }
-
 
     // --- WORKAROUND CARDS & SOCIAL FEATURES ---
     
@@ -510,7 +502,12 @@
       const uid = currentUser?.email || localUserId;
       const isUpvoted = (note.upvotedBy || []).includes(uid);
       const comments = note.comments || [];
-      const adminDel = isAdmin ? `<button onclick="deleteWorkaround('${docId}')" class="text-red-500 hover:text-red-700 text-xs font-bold transition">Delete</button>` : '';
+      
+      const adminDel = isAdmin ? `
+        <button onclick="deleteWorkaround('${docId}')" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition" title="Delete">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        </button>
+      ` : '';
 
       let commentsHtml = comments.map(c => `
         <div class="mb-2 last:mb-0">
@@ -521,13 +518,13 @@
       `).join('');
 
       return `
-        <div class="bg-white dark:bg-slate-700 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 mb-4 transition-all">
+        <div class="relative bg-white dark:bg-slate-700 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 mb-4 transition-all pr-12">
+          ${adminDel}
           <div class="flex justify-between items-center mb-2">
             <div>
               <span class="font-bold text-slate-900 dark:text-white">${note.author}</span>
               <span class="text-xs text-slate-500 ml-2">${timeStr}</span>
             </div>
-            ${adminDel}
           </div>
           <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded font-bold mb-3 cursor-pointer hover:underline" onclick="openDetails('${note.code}')">${note.code}</span>
           <p class="text-sm text-slate-800 dark:text-slate-200 mb-4 whitespace-pre-wrap leading-relaxed">${note.solution}</p>
@@ -671,7 +668,6 @@
       }
     }
 
-    // Auto-suggest logic
     function suggestCodes() {
       const input = document.getElementById('fixCode').value.trim().toUpperCase();
       const box = document.getElementById('codeSuggestions');
