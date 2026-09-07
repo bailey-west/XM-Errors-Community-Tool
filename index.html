@@ -33,7 +33,7 @@
     .spotlight-hover { outline: 2px dashed #a855f7 !important; outline-offset: 4px; cursor: crosshair !important; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 font-sans transition-colors duration-300 relative" onload="initApp()">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 font-sans transition-colors duration-300 relative overflow-x-hidden" onload="initApp()">
 
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed bottom-6 right-6 z-[300] flex flex-col gap-3 pointer-events-none"></div>
@@ -61,11 +61,19 @@
     </div>
   </div>
 
-  <!-- CONCEPT OUTAGE BANNER (Hidden by default) -->
+  <!-- CONCEPT OUTAGE BANNER -->
   <div id="conceptBanner" class="concept-feature hidden bg-red-600 text-white font-bold py-2 overflow-hidden whitespace-nowrap shadow-md z-[100] relative">
     <div class="animate-marquee tracking-wider">
       🚨 ACTIVE OUTAGE: XM360 experiencing high latency. Support bridge is OPEN. Please report affected store numbers in the Active Bridge tab. 🚨
     </div>
+  </div>
+
+  <!-- CONCEPT NOTES TOGGLE BUTTON (Side Tab) -->
+  <div id="notesPanelToggleBtn" class="concept-feature hidden fixed right-0 top-1/2 transform -translate-y-1/2 z-[350]">
+    <button onclick="toggleNotesPanel()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-2 rounded-l-xl shadow-2xl flex flex-col items-center justify-center transition focus:outline-none">
+      <svg class="w-5 h-5 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+      <span class="text-xs tracking-widest" style="writing-mode: vertical-rl; text-orientation: mixed;">NOTES</span>
+    </button>
   </div>
 
   <!-- MAIN APP CONTAINER -->
@@ -285,28 +293,36 @@
     </div>
   </div>
 
-  <!-- CONCEPT: NOTES SIDEBAR -->
-  <div id="conceptSidebar" class="concept-feature hidden fixed top-48 right-6 w-80 bg-purple-50 dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 shadow-2xl rounded-xl p-4 z-[150] transition-transform transform origin-top-right">
-    <div class="flex justify-between items-center mb-3 pb-2 border-b border-purple-200 dark:border-slate-700">
-      <h3 class="font-bold text-purple-800 dark:text-purple-300 flex items-center">
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-        Notes
+  <!-- CONCEPT: SLIDE OUT NOTES PANEL (Drawer) -->
+  <div id="conceptSidebar" class="concept-feature hidden fixed top-0 right-0 h-full w-80 bg-purple-50 dark:bg-slate-800 border-l border-purple-300 dark:border-purple-600 shadow-2xl p-5 z-[400] transition-transform duration-300 transform translate-x-full overflow-hidden flex flex-col">
+    <div class="flex justify-between items-center mb-4 pb-3 border-b border-purple-200 dark:border-slate-700">
+      <h3 class="font-bold text-lg text-purple-800 dark:text-purple-300 flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+        Notes Panel
       </h3>
+      <button onclick="toggleNotesPanel()" class="text-slate-400 hover:text-red-500 transition focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
     </div>
-    <textarea class="w-full text-sm p-3 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3 shadow-inner" rows="4" placeholder="Type presentation context or business justification notes here..."></textarea>
-    <button onclick="startSpotlight()" class="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-2 rounded shadow flex items-center justify-center transition">
-      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
-      Add Note to Element
-    </button>
     
-    <!-- Saved Notes Display Area -->
-    <div id="savedNotesContainer" class="mt-3 space-y-2 max-h-48 overflow-y-auto pr-1 hidden border-t border-purple-200 dark:border-purple-600 pt-3">
-      <!-- Injected via JS -->
+    <div class="flex-shrink-0">
+      <textarea class="w-full text-sm p-3 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3 shadow-inner" rows="4" placeholder="Type presentation context or business justification notes here..."></textarea>
+      <button onclick="startSpotlight()" class="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-3 rounded shadow flex items-center justify-center transition mb-2">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+        Add Note to Element
+      </button>
+    </div>
+    
+    <!-- Saved Notes Display Area (Flex-1 allows it to take up remaining height) -->
+    <div class="flex-1 overflow-y-auto mt-2 pt-2 border-t border-purple-200 dark:border-purple-600">
+      <div id="savedNotesContainer" class="space-y-3 hidden pr-1 pb-4">
+        <!-- Injected via JS -->
+      </div>
     </div>
   </div>
 
   <!-- ADMIN MODAL (Errors) -->
-  <div id="adminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[400] flex items-center justify-center">
+  <div id="adminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[500] flex items-center justify-center">
     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl w-full max-w-lg">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4" id="adminModalTitle">Add/Edit Code</h2>
       <form onsubmit="saveAdminCode(event)" class="space-y-4">
@@ -331,7 +347,7 @@
   </div>
 
   <!-- ADMIN MODAL (Links) -->
-  <div id="linkAdminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[400] flex items-center justify-center">
+  <div id="linkAdminModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-[500] flex items-center justify-center">
     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl w-full max-w-lg">
       <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4" id="linkAdminModalTitle">Add/Edit Link</h2>
       <form onsubmit="saveAdminLink(event)" class="space-y-4">
@@ -381,7 +397,8 @@
       'njttaylor@gmail.com',
       'meghan_ball@cable.comcast.com',
       'tyler_simpson@comcast.com',
-      'meghan.ball19@gmail.com'
+      'meghan.ball19@gmail.com',
+      'shanagans424@gmail.com'
     ];
     let currentUser = null;
     let isAdmin = false;
@@ -456,8 +473,9 @@
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     }
 
-    // --- CONCEPT MODE LOGIC ---
+    // --- CONCEPT MODE & NOTES DRAWER LOGIC ---
     let isConceptMode = false;
+    let isNotesPanelOpen = false;
     let savedConceptNotes = JSON.parse(localStorage.getItem('xm360_pitch_notes')) || [];
 
     function toggleConceptMode() {
@@ -471,7 +489,7 @@
         dot.classList.add('translate-x-5');
         btn.classList.replace('bg-slate-300', 'bg-purple-600');
         btn.classList.replace('dark:bg-slate-600', 'dark:bg-purple-600');
-        renderSavedNotes(); // Show notes if any were loaded from local storage
+        renderSavedNotes(); 
       } else {
         dot.classList.remove('translate-x-5');
         btn.classList.replace('bg-purple-600', 'bg-slate-300');
@@ -488,6 +506,18 @@
         if(isConceptMode) el.classList.remove('hidden');
         else el.classList.add('hidden');
       });
+    }
+
+    function toggleNotesPanel() {
+      const panel = document.getElementById('conceptSidebar');
+      isNotesPanelOpen = !isNotesPanelOpen;
+      if (isNotesPanelOpen) {
+        panel.classList.remove('translate-x-full');
+        panel.classList.add('translate-x-0');
+      } else {
+        panel.classList.remove('translate-x-0');
+        panel.classList.add('translate-x-full');
+      }
     }
 
     // --- CONCEPT AI SEARCH DEMO ---
@@ -525,7 +555,6 @@
     let currentHighlighter = null;
     let currentNoteBox = null;
 
-    // Helper to map an element to a unique CSS path to save it to local storage
     function getCssSelector(el) {
       if (!(el instanceof Element)) return;
       let path = [];
@@ -555,6 +584,9 @@
       document.addEventListener('mouseover', highlightElement);
       document.addEventListener('click', selectElement, { capture: true });
       showToast("Select any element on the screen.", "success");
+      
+      // Auto-collapse notes panel so user can see what to click
+      if(isNotesPanelOpen) toggleNotesPanel();
     }
 
     function highlightElement(e) {
@@ -637,6 +669,9 @@
       renderSavedNotes();
       clearSpotlight();
       showToast("Note saved to sidebar.");
+      
+      // Auto-reopen the panel so they see it appended
+      if (!isNotesPanelOpen) toggleNotesPanel();
     }
 
     function renderSavedNotes() {
@@ -647,9 +682,9 @@
       }
       container.classList.remove('hidden');
       container.innerHTML = savedConceptNotes.map(n => `
-        <div onclick="viewSavedNote('${n.id}')" class="bg-purple-100 dark:bg-slate-700 p-2.5 rounded border border-purple-200 dark:border-slate-600 cursor-pointer hover:border-purple-400 dark:hover:border-purple-400 transition group relative shadow-sm">
+        <div onclick="viewSavedNote('${n.id}')" class="bg-white dark:bg-slate-900 p-3 rounded border border-purple-200 dark:border-slate-600 cursor-pointer hover:border-purple-400 dark:hover:border-purple-400 transition group relative shadow-sm">
           <p class="text-xs text-slate-800 dark:text-slate-200 font-medium pr-6">${n.preview}</p>
-          <button onclick="deleteSavedNote('${n.id}', event)" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+          <button onclick="deleteSavedNote('${n.id}', event)" class="absolute top-2.5 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition focus:outline-none">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
           </button>
         </div>
@@ -679,6 +714,9 @@
 
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
+      // Auto-collapse panel temporarily while viewing note so it doesn't block the screen
+      if (isNotesPanelOpen) toggleNotesPanel();
+
       setTimeout(() => {
         const rect = targetEl.getBoundingClientRect();
         
@@ -707,7 +745,7 @@
         currentNoteBox.innerHTML = `
           <div class="flex justify-between items-center mb-2">
             <h4 class="font-bold text-sm text-purple-700 dark:text-purple-400">Context Note</h4>
-            <button onclick="clearSpotlight()" class="text-slate-400 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            <button onclick="clearSpotlight()" class="text-slate-400 hover:text-red-500 focus:outline-none"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
           </div>
           <p class="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">${note.text}</p>
         `;
@@ -741,9 +779,7 @@
     }
 
     function cleanProfanity(text) {
-      // NOTE: Profanity filter list has been replaced with safe dummy words to 
-      // prevent the AI moderation systems from blocking the response generation.
-      // You can paste your original array here.
+      // Dummy list for AI Safety Filters - Replace with your original array!
       const badWords = ['badword', 'crap', 'heck'];
       return text.replace(new RegExp(`\\b(${badWords.join('|')})\\b`, 'gi'), '***');
     }
