@@ -10,7 +10,7 @@
     tailwind.config = { darkMode: 'class' }
   </script>
   <style>
-    /* Minimalist Scrollbar */
+    /* Minimalist Scrollbar Customization */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
@@ -18,10 +18,11 @@
     .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
     .dark ::-webkit-scrollbar-thumb:hover { background-color: #64748b; }
     
-    /* Animations */
+    /* Toast Animation */
     @keyframes slideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .toast-enter { animation: slideIn 0.3s ease-out forwards; }
     
+    /* Button Spinner */
     .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -107,10 +108,18 @@
         <!-- Concept: AI Search Bar -->
         <div id="conceptAISearch" class="concept-feature hidden mb-6 relative group">
           <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg blur opacity-75"></div>
-          <div class="relative flex items-center bg-white dark:bg-slate-900 rounded-lg">
-            <svg class="w-6 h-6 absolute left-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-            <input type="text" placeholder="✨ Describe what the customer is seeing to get an AI recommendation..." class="w-full p-4 pl-12 bg-transparent text-slate-800 dark:text-white rounded-lg focus:outline-none focus:ring-0">
-            <button class="absolute right-2 px-4 py-1.5 bg-purple-600 text-white font-bold rounded-md hover:bg-purple-700 text-sm">Ask AI</button>
+          <div class="relative bg-white dark:bg-slate-900 rounded-lg">
+            <div class="flex items-center">
+              <svg class="w-6 h-6 absolute left-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              <form onsubmit="simulateAISearch(event)" class="w-full flex items-center">
+                <input type="text" id="aiSearchInput" placeholder="✨ Describe the error you're seeing to get an AI recommendation..." class="w-full p-4 pl-12 bg-transparent text-slate-800 dark:text-white rounded-lg focus:outline-none focus:ring-0">
+                <button type="submit" class="absolute right-2 px-4 py-1.5 bg-purple-600 text-white font-bold rounded-md hover:bg-purple-700 text-sm transition">Ask AI</button>
+              </form>
+            </div>
+          </div>
+          <!-- Concept AI Response Box -->
+          <div id="aiSearchResponse" class="hidden mt-3 p-5 bg-purple-50 dark:bg-slate-800 border border-purple-200 dark:border-purple-600 rounded-lg text-sm text-slate-700 dark:text-slate-300 shadow-inner">
+            <!-- Simulated Response gets injected here -->
           </div>
         </div>
 
@@ -160,6 +169,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <!-- Escalation Path -->
           <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 h-fit flex flex-col relative">
             <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2 mb-4">
               <h3 class="text-xl font-bold text-slate-800 dark:text-white text-red-600 dark:text-red-400">Escalation Path</h3>
@@ -171,6 +181,7 @@
             <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-6 whitespace-pre-wrap" id="detailPath"></p>
           </div>
           
+          <!-- Community Notes -->
           <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
             <h3 class="text-xl font-bold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 text-blue-600 dark:text-blue-400">Community Workarounds</h3>
             <div class="space-y-4 overflow-y-auto max-h-[500px] pr-2" id="detailCommunityNotes"></div>
@@ -274,19 +285,24 @@
     </div>
   </div>
 
-  <!-- CONCEPT: BUSINESS JUSTIFICATION SIDEBAR -->
+  <!-- CONCEPT: NOTES SIDEBAR -->
   <div id="conceptSidebar" class="concept-feature hidden fixed top-32 right-6 w-80 bg-purple-50 dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 shadow-2xl rounded-xl p-4 z-[150] transition-transform transform origin-top-right">
     <div class="flex justify-between items-center mb-3 pb-2 border-b border-purple-200 dark:border-slate-700">
       <h3 class="font-bold text-purple-800 dark:text-purple-300 flex items-center">
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-        Pitch Notes
+        Notes
       </h3>
     </div>
-    <textarea class="w-full text-sm p-3 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3 shadow-inner" rows="6" placeholder="Type overall business justification notes here for your leadership presentation..."></textarea>
+    <textarea class="w-full text-sm p-3 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3 shadow-inner" rows="4" placeholder="Type your notes here..."></textarea>
     <button onclick="startSpotlight()" class="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-2 rounded shadow flex items-center justify-center transition">
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
       Add Note to Element
     </button>
+    
+    <!-- Saved Notes Display Area -->
+    <div id="savedNotesContainer" class="mt-3 space-y-2 max-h-48 overflow-y-auto pr-1 hidden border-t border-purple-200 dark:border-purple-600 pt-3">
+      <!-- Injected via JS -->
+    </div>
   </div>
 
   <!-- ADMIN MODAL (Errors) -->
@@ -397,7 +413,6 @@
             document.getElementById('adminControls').classList.add('flex');
             document.getElementById('adminLinkControls').classList.remove('hidden');
             document.getElementById('adminLinkControls').classList.add('flex');
-            // Show concept toggle for admins
             document.getElementById('adminConceptToggleWrapper').classList.remove('hidden');
           }
           document.getElementById('guestNameField').classList.add('hidden');
@@ -443,6 +458,8 @@
 
     // --- CONCEPT MODE LOGIC ---
     let isConceptMode = false;
+    let savedConceptNotes = []; // Stores saved spotlight notes
+
     function toggleConceptMode() {
       if(!isAdmin) return;
       isConceptMode = !isConceptMode;
@@ -458,7 +475,6 @@
         dot.classList.remove('translate-x-5');
         btn.classList.replace('bg-purple-600', 'bg-slate-300');
         btn.classList.replace('dark:bg-purple-600', 'dark:bg-slate-600');
-        // Hide bridge tab if we toggle off while looking at it
         if(document.getElementById('view-bridge').classList.contains('block')) switchTab('hub');
       }
 
@@ -466,6 +482,36 @@
         if(isConceptMode) el.classList.remove('hidden');
         else el.classList.add('hidden');
       });
+    }
+
+    // --- CONCEPT AI SEARCH DEMO ---
+    function simulateAISearch(e) {
+      e.preventDefault();
+      const input = document.getElementById('aiSearchInput').value.trim();
+      if(!input) return;
+      
+      const respBox = document.getElementById('aiSearchResponse');
+      respBox.classList.remove('hidden');
+      respBox.innerHTML = `
+        <div class="flex items-center text-purple-600 dark:text-purple-400 font-bold mb-2">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-purple-600 dark:text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          Analyzing error...
+        </div>
+      `;
+
+      setTimeout(() => {
+        respBox.innerHTML = `
+          <strong class="text-purple-700 dark:text-purple-400 flex items-center text-lg"><svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> AI Analysis Complete</strong>
+          <p class="mt-2 text-slate-800 dark:text-slate-200">Based on the description <em>"${input}"</em>, this closely matches <span class="bg-purple-200 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 px-1.5 py-0.5 rounded font-mono text-xs font-bold border border-purple-300 dark:border-purple-700 shadow-sm cursor-pointer hover:underline" onclick="document.getElementById('filterInput').value='MBC-7305'; filterDictionary();">MBC-7305</span> (Device locked to previous carrier).</p>
+          <div class="mt-3 bg-white dark:bg-slate-900 p-3 rounded border border-purple-100 dark:border-slate-700">
+            <p class="font-bold text-slate-700 dark:text-slate-300 text-xs uppercase tracking-wider mb-2">Recommended Actions:</p>
+            <ul class="list-disc ml-5 mt-1 space-y-1 text-slate-600 dark:text-slate-400">
+              <li>Verify BYOD eligibility using the <a href="#" onclick="switchTab('links')" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Helpful Links</a> tab.</li>
+              <li>Check the Community Hub for <a href="#" onclick="document.getElementById('filterInput').value='MBC-7305'; filterDictionary(); switchTab('hub');" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">workarounds related to MBC-7305</a>.</li>
+            </ul>
+          </div>
+        `;
+      }, 1500);
     }
 
     // --- SPOTLIGHT SELECTOR LOGIC ---
@@ -504,6 +550,7 @@
       const target = e.target;
       if(target === document.body || document.getElementById('conceptSidebar').contains(target)) return;
 
+      window.activeSpotlightElement = target; // Save target globally for saving the note
       const rect = target.getBoundingClientRect();
       
       // Backdrop / Highlighter
@@ -515,19 +562,18 @@
       currentHighlighter.style.height = rect.height + 'px';
       currentHighlighter.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.75), 0 0 15px 5px rgba(168,85,247,0.5)';
       currentHighlighter.style.zIndex = '9998';
-      currentHighlighter.style.pointerEvents = 'auto'; // Block clicks on background
+      currentHighlighter.style.pointerEvents = 'auto'; 
       currentHighlighter.style.borderRadius = window.getComputedStyle(target).borderRadius;
-      currentHighlighter.onclick = clearSpotlight; // Click outside to clear
+      currentHighlighter.onclick = clearSpotlight; 
 
       // Note Box
       currentNoteBox = document.createElement('div');
       currentNoteBox.className = 'fixed bg-white dark:bg-slate-800 p-4 rounded-lg shadow-2xl z-[9999] border-2 border-purple-500 w-72 transition-all';
       
-      // Calculate position so it doesn't run off screen
       let noteTop = rect.bottom + 15;
       let noteLeft = rect.left;
-      if (noteTop + 150 > window.innerHeight) noteTop = rect.top - 150 - 15; // Put above if too low
-      if (noteLeft + 288 > window.innerWidth) noteLeft = window.innerWidth - 300; // Shift left if too far right
+      if (noteTop + 160 > window.innerHeight) noteTop = rect.top - 160 - 15; 
+      if (noteLeft + 288 > window.innerWidth) noteLeft = window.innerWidth - 300; 
       
       currentNoteBox.style.top = noteTop + 'px';
       currentNoteBox.style.left = noteLeft + 'px';
@@ -536,11 +582,107 @@
           <h4 class="font-bold text-sm text-purple-700 dark:text-purple-400">Context Note</h4>
           <button onclick="clearSpotlight()" class="text-slate-400 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         </div>
-        <textarea class="w-full text-sm p-2 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-purple-500 mb-2" rows="3" placeholder="Type presentation context..."></textarea>
+        <textarea id="spotlightNoteText" class="w-full text-sm p-2 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-purple-500 mb-2" rows="3" placeholder="Type presentation context..."></textarea>
+        <div class="flex justify-end">
+          <button onclick="saveSpotlightNote()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded transition shadow">Save Note</button>
+        </div>
       `;
 
       document.body.appendChild(currentHighlighter);
       document.body.appendChild(currentNoteBox);
+    }
+
+    function saveSpotlightNote() {
+      const text = document.getElementById('spotlightNoteText').value.trim();
+      if(!text) return clearSpotlight();
+      
+      const noteId = 'note_' + Date.now();
+      savedConceptNotes.push({
+        id: noteId,
+        element: window.activeSpotlightElement,
+        text: text,
+        preview: text.substring(0, 35) + (text.length > 35 ? '...' : '')
+      });
+      
+      renderSavedNotes();
+      clearSpotlight();
+      showToast("Note saved to sidebar.");
+    }
+
+    function renderSavedNotes() {
+      const container = document.getElementById('savedNotesContainer');
+      if(savedConceptNotes.length === 0) {
+        container.classList.add('hidden');
+        return;
+      }
+      container.classList.remove('hidden');
+      container.innerHTML = savedConceptNotes.map(n => `
+        <div onclick="viewSavedNote('${n.id}')" class="bg-purple-100 dark:bg-slate-700 p-2.5 rounded border border-purple-200 dark:border-slate-600 cursor-pointer hover:border-purple-400 dark:hover:border-purple-400 transition group relative shadow-sm">
+          <p class="text-xs text-slate-800 dark:text-slate-200 font-medium pr-6">${n.preview}</p>
+          <button onclick="deleteSavedNote('${n.id}', event)" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function deleteSavedNote(id, e) {
+      e.stopPropagation();
+      savedConceptNotes = savedConceptNotes.filter(n => n.id !== id);
+      renderSavedNotes();
+      clearSpotlight();
+    }
+
+    function viewSavedNote(id) {
+      clearSpotlight();
+      const note = savedConceptNotes.find(n => n.id === id);
+      if(!note) return;
+
+      // Check if element is currently hidden
+      if(note.element.offsetParent === null) {
+        showToast("Navigate to the correct tab to view this note.", "error");
+        return;
+      }
+
+      note.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Delay slightly for scroll to finish
+      setTimeout(() => {
+        const rect = note.element.getBoundingClientRect();
+        
+        currentHighlighter = document.createElement('div');
+        currentHighlighter.style.position = 'fixed';
+        currentHighlighter.style.top = rect.top + 'px';
+        currentHighlighter.style.left = rect.left + 'px';
+        currentHighlighter.style.width = rect.width + 'px';
+        currentHighlighter.style.height = rect.height + 'px';
+        currentHighlighter.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.75), 0 0 15px 5px rgba(168,85,247,0.5)';
+        currentHighlighter.style.zIndex = '9998';
+        currentHighlighter.style.pointerEvents = 'auto'; 
+        currentHighlighter.style.borderRadius = window.getComputedStyle(note.element).borderRadius;
+        currentHighlighter.onclick = clearSpotlight;
+
+        currentNoteBox = document.createElement('div');
+        currentNoteBox.className = 'fixed bg-white dark:bg-slate-800 p-4 rounded-lg shadow-2xl z-[9999] border-2 border-purple-500 w-72 transition-all';
+        
+        let noteTop = rect.bottom + 15;
+        let noteLeft = rect.left;
+        if (noteTop + 120 > window.innerHeight) noteTop = rect.top - 120 - 15;
+        if (noteLeft + 288 > window.innerWidth) noteLeft = window.innerWidth - 300;
+        
+        currentNoteBox.style.top = noteTop + 'px';
+        currentNoteBox.style.left = noteLeft + 'px';
+        currentNoteBox.innerHTML = `
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="font-bold text-sm text-purple-700 dark:text-purple-400">Context Note</h4>
+            <button onclick="clearSpotlight()" class="text-slate-400 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+          </div>
+          <p class="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">${note.text}</p>
+        `;
+
+        document.body.appendChild(currentHighlighter);
+        document.body.appendChild(currentNoteBox);
+      }, 300); 
     }
 
     function clearSpotlight() {
@@ -549,7 +691,6 @@
       currentHighlighter = null;
       currentNoteBox = null;
     }
-
 
     // --- TOASTS & UTILS ---
     function showToast(message, type = 'success') {
@@ -703,7 +844,6 @@
         showToast("Link deleted.");
       }
     }
-
 
     // --- WORKAROUND CARDS & SOCIAL FEATURES ---
     
@@ -942,12 +1082,9 @@
     }
 
     function switchTab(tab) {
-      // Clear concept mode state if navigating away from bridge
       if (tab !== 'bridge' && tab !== 'none') {
         document.querySelectorAll('.concept-feature').forEach(el => {
-           if(el.id !== 'tab-bridge' && el.id !== 'conceptBanner' && el.id !== 'conceptAISearch' && el.id !== 'conceptSidebar') {
-             // Keep the switch state visual layout accurate if they just change tabs
-           }
+           // Do nothing here to preserve layout
         });
       }
 
@@ -958,7 +1095,6 @@
         
         if(btn) {
           if (t === 'bridge') {
-             // Special styling for the bridge tab
              btn.className = t === tab ? "concept-feature px-6 py-2 bg-red-700 text-white font-bold rounded-full transition shadow-lg shadow-red-500/50" + (!isConceptMode ? " hidden" : "") : "concept-feature px-6 py-2 bg-red-600 text-white border border-red-700 font-bold rounded-full hover:bg-red-700 transition shadow-lg animate-pulse shadow-red-500/50" + (!isConceptMode ? " hidden" : "");
           } else {
              btn.className = t === tab ? "px-6 py-2 bg-blue-600 text-white font-semibold rounded-full transition shadow" : "px-6 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 font-semibold rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition shadow-sm";
