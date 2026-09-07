@@ -105,7 +105,7 @@
       <!-- TAB 1: HUB -->
       <div id="view-hub" class="block">
         
-        <!-- Concept: AI Search Bar (Glow properly isolated to the input wrapper) -->
+        <!-- Concept: AI Search Bar -->
         <div id="conceptAISearch" class="concept-feature hidden mb-6">
           <div class="relative group">
             <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg blur opacity-75"></div>
@@ -458,7 +458,7 @@
 
     // --- CONCEPT MODE LOGIC ---
     let isConceptMode = false;
-    let savedConceptNotes = []; // Stores saved spotlight notes
+    let savedConceptNotes = JSON.parse(localStorage.getItem('xm360_pitch_notes')) || [];
 
     function toggleConceptMode() {
       if(!isAdmin) return;
@@ -471,6 +471,7 @@
         dot.classList.add('translate-x-5');
         btn.classList.replace('bg-slate-300', 'bg-purple-600');
         btn.classList.replace('dark:bg-slate-600', 'dark:bg-purple-600');
+        renderSavedNotes(); // Show notes if any were loaded from local storage
       } else {
         dot.classList.remove('translate-x-5');
         btn.classList.replace('bg-purple-600', 'bg-slate-300');
@@ -480,6 +481,7 @@
         if(!document.getElementById('view-bridge').classList.contains('hidden')) {
           switchTab('hub');
         }
+        clearSpotlight();
       }
 
       document.querySelectorAll('.concept-feature').forEach(el => {
@@ -523,6 +525,29 @@
     let currentHighlighter = null;
     let currentNoteBox = null;
 
+    // Helper to map an element to a unique CSS path to save it to local storage
+    function getCssSelector(el) {
+      if (!(el instanceof Element)) return;
+      let path = [];
+      while (el.nodeType === Node.ELEMENT_NODE) {
+        let selector = el.nodeName.toLowerCase();
+        if (el.id) {
+          selector += '#' + el.id;
+          path.unshift(selector);
+          break;
+        } else {
+          let sib = el, nth = 1;
+          while (sib = sib.previousElementSibling) {
+            if (sib.nodeName.toLowerCase() == selector) nth++;
+          }
+          if (nth != 1) selector += ":nth-of-type("+nth+")";
+        }
+        path.unshift(selector);
+        el = el.parentNode;
+      }
+      return path.join(" > ");
+    }
+
     function startSpotlight() {
       if(currentHighlighter) clearSpotlight();
       isSelecting = true;
@@ -554,10 +579,9 @@
       const target = e.target;
       if(target === document.body || document.getElementById('conceptSidebar').contains(target)) return;
 
-      window.activeSpotlightElement = target; // Save target globally for saving the note
+      window.activeSpotlightElement = target; 
       const rect = target.getBoundingClientRect();
       
-      // Backdrop / Highlighter
       currentHighlighter = document.createElement('div');
       currentHighlighter.style.position = 'fixed';
       currentHighlighter.style.top = rect.top + 'px';
@@ -570,7 +594,6 @@
       currentHighlighter.style.borderRadius = window.getComputedStyle(target).borderRadius;
       currentHighlighter.onclick = clearSpotlight; 
 
-      // Note Box
       currentNoteBox = document.createElement('div');
       currentNoteBox.className = 'fixed bg-white dark:bg-slate-800 p-4 rounded-lg shadow-2xl z-[9999] border-2 border-purple-500 w-72 transition-all';
       
@@ -601,13 +624,16 @@
       if(!text) return clearSpotlight();
       
       const noteId = 'note_' + Date.now();
+      const selector = getCssSelector(window.activeSpotlightElement);
+      
       savedConceptNotes.push({
         id: noteId,
-        element: window.activeSpotlightElement,
+        selector: selector,
         text: text,
         preview: text.substring(0, 35) + (text.length > 35 ? '...' : '')
       });
       
+      localStorage.setItem('xm360_pitch_notes', JSON.stringify(savedConceptNotes));
       renderSavedNotes();
       clearSpotlight();
       showToast("Note saved to sidebar.");
@@ -633,6 +659,7 @@
     function deleteSavedNote(id, e) {
       e.stopPropagation();
       savedConceptNotes = savedConceptNotes.filter(n => n.id !== id);
+      localStorage.setItem('xm360_pitch_notes', JSON.stringify(savedConceptNotes));
       renderSavedNotes();
       clearSpotlight();
     }
@@ -642,15 +669,18 @@
       const note = savedConceptNotes.find(n => n.id === id);
       if(!note) return;
 
-      if(note.element.offsetParent === null) {
-        showToast("Navigate to the correct tab to view this note.", "error");
+      let targetEl = null;
+      try { targetEl = document.querySelector(note.selector); } catch(err) {}
+
+      if(!targetEl || targetEl.offsetParent === null) {
+        showToast("Element not visible. Make sure the correct tab is open and data has loaded.", "error");
         return;
       }
 
-      note.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
       setTimeout(() => {
-        const rect = note.element.getBoundingClientRect();
+        const rect = targetEl.getBoundingClientRect();
         
         currentHighlighter = document.createElement('div');
         currentHighlighter.style.position = 'fixed';
@@ -661,7 +691,7 @@
         currentHighlighter.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.75), 0 0 15px 5px rgba(168,85,247,0.5)';
         currentHighlighter.style.zIndex = '9998';
         currentHighlighter.style.pointerEvents = 'auto'; 
-        currentHighlighter.style.borderRadius = window.getComputedStyle(note.element).borderRadius;
+        currentHighlighter.style.borderRadius = window.getComputedStyle(targetEl).borderRadius;
         currentHighlighter.onclick = clearSpotlight;
 
         currentNoteBox = document.createElement('div');
@@ -711,9 +741,10 @@
     }
 
     function cleanProfanity(text) {
-      // NOTE: Explicit array removed to pass AI content moderation filters.
-      // You can paste your original array back here safely!
-      const badWords = ['badword', 'crap', 'heck']; 
+      // NOTE: Profanity filter list has been replaced with safe dummy words to 
+      // prevent the AI moderation systems from blocking the response generation.
+      // You can paste your original array here.
+      const badWords = ['badword', 'crap', 'heck'];
       return text.replace(new RegExp(`\\b(${badWords.join('|')})\\b`, 'gi'), '***');
     }
 
